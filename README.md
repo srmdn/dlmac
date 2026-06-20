@@ -25,6 +25,8 @@ cd dlmac
 dlmac info <url>                    Show video metadata
 dlmac formats <url>                 Show available formats
 dlmac video <url>                   Download best video (mp4)
+dlmac video <url> --quality 360p    Download best video up to 360p
+dlmac video <url> --quality 480p    Download best video up to 480p
 dlmac video <url> --quality 720p    Download best video up to 720p
 dlmac video <url> --quality 1080p   Download best video up to 1080p
 dlmac audio <url>                   Download best audio (mp3)
@@ -54,13 +56,43 @@ All downloads saved to `./downloads/`.
 ./dlmac convert myvideo.mp4 --to mp3
 ```
 
-## Limitations (v0.1)
+## Compatibility
+
+**Video downloads produce H.264 video with AAC audio in an MP4 container.**
+This is the format QuickTime, Safari, and Apple's media framework expect.
+
+If the source offers H.264+AAC natively, dlmac downloads it directly with
+zero re-encoding — fast and lossless. If H.264+AAC is unavailable, dlmac
+automatically re-encodes the output with ffmpeg.
+
+Players like VLC, IINA, and mpv can play any codec combination. The H.264+AAC
+preference only matters for QuickTime and Apple apps.
+
+## Troubleshooting
+
+**QuickTime can't open the file**
+The output is already H.264+AAC and should work with QuickTime. If you
+still have issues, check that ffmpeg is installed (`brew install ffmpeg`)
+and that your yt-dlp is up to date (`brew upgrade yt-dlp`).
+
+**No H.264 formats available**
+Some videos (particularly at 1080p and above) only offer VP9/AV1 video.
+dlmac falls back to whatever is available and re-encodes automatically.
+You'll see a "Re-encoding to H.264+AAC" message during download.
+
+**"Re-encoding to H.264+AAC" message appears**
+This is normal when the source doesn't provide H.264+AAC natively.
+The download will take longer because ffmpeg must re-encode the entire
+video. The result is still a QuickTime-compatible MP4.
+
+## Limitations
 
 - macOS only
 - No playlist support
 - No interactive format selector
 - No login/cookie support
-- Quality depends on source video availability; falls back to best available below requested
+- Quality depends on source video availability; falls back to best available
+  below the requested resolution
 
 ## Legal Notice
 
