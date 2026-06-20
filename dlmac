@@ -167,6 +167,85 @@ cmd_audio() {
     "$url"
 }
 
+cmd_convert() {
+  if [[ $# -lt 2 ]]; then
+    echo "dlmac: missing arguments"
+    echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+    exit 1
+  fi
+
+  local input_file="$1"
+  shift
+
+  local output_format=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --to)
+        if [[ -z "${2:-}" ]]; then
+          echo "dlmac: --to requires a value"
+          echo "Valid values: mp3, m4a, wav"
+          exit 1
+        fi
+        case "$2" in
+          mp3|m4a|wav) output_format="$2" ;;
+          *)
+            echo "dlmac: unsupported format '$2'"
+            echo "Valid values: mp3, m4a, wav"
+            exit 1
+            ;;
+        esac
+        shift 2
+        ;;
+      *)
+        echo "dlmac: unknown option '$1'"
+        echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+        exit 1
+        ;;
+    esac
+  done
+
+  if [[ -z "$output_format" ]]; then
+    echo "dlmac: missing --to flag"
+    echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+    exit 1
+  fi
+
+  if [[ ! -f "$input_file" ]]; then
+    echo "dlmac: file not found: $input_file"
+    exit 1
+  fi
+
+  require_cmd ffmpeg
+
+  mkdir -p "$DOWNLOAD_DIR"
+
+  local basename
+  basename="$(basename "$input_file")"
+  basename="${basename%.*}"
+  local output_file="${DOWNLOAD_DIR}/${basename}.${output_format}"
+
+  if [[ -f "$output_file" ]]; then
+    echo "dlmac: output file already exists: $output_file"
+    echo "Remove it first or rename the input file."
+    exit 1
+  fi
+
+  case "$output_format" in
+    mp3)
+      ffmpeg -i "$input_file" -vn -acodec libmp3lame -q:a 2 "$output_file"
+      ;;
+    m4a)
+      ffmpeg -i "$input_file" -vn -c:a aac -b:a 192k "$output_file"
+      ;;
+    wav)
+      ffmpeg -i "$input_file" -vn "$output_file"
+      ;;
+  esac
+
+  echo "Converted: $output_file"
+}
+
 main() {
   if [[ $# -eq 0 ]]; then
     usage 0
@@ -189,8 +268,7 @@ main() {
       cmd_audio "$@"
       ;;
     convert)
-      echo "dlmac: '$cmd' not implemented yet (v${VERSION})"
-      exit 0
+      cmd_convert "$@"
       ;;
     -h|--help)
       usage 0
