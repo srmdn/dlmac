@@ -5,7 +5,7 @@
 `dlmac` is a local macOS CLI wrapper for `yt-dlp` and `ffmpeg`. It downloads
 permitted online media and extracts audio from local video files.
 
-## Current release: v0.1
+## Current release: v0.2
 
 ### Dependencies
 
@@ -29,6 +29,12 @@ dlmac audio <url>
 dlmac audio <url> --format mp3
 dlmac audio <url> --format m4a
 dlmac audio <url> --format wav
+dlmac transcript <url>
+dlmac transcript <url> --lang id
+dlmac transcript <url> --lang en
+dlmac transcript <url> --format txt
+dlmac transcript <url> --format vtt
+dlmac transcript <url> --format srt
 dlmac convert <file> --to mp3
 dlmac convert <file> --to m4a
 dlmac convert <file> --to wav
@@ -55,6 +61,15 @@ in `./downloads/`.
 `dlmac audio <url> --format mp3|m4a|wav` downloads the best audio and converts
 it to the selected format.
 
+`dlmac transcript <url>` downloads public English captions or auto captions,
+converts them to plain text, and saves the result in `./downloads/`.
+
+`dlmac transcript <url> --lang id|en` downloads public captions or auto
+captions for the selected language.
+
+`dlmac transcript <url> --format txt|vtt|srt` saves the transcript in the
+selected format. Plain text is the default.
+
 `dlmac convert <file> --to mp3|m4a|wav` extracts audio from a local video file.
 The output goes to `./downloads/`, preserves the base filename, and does not
 overwrite an existing output file.
@@ -70,43 +85,18 @@ overwrite an existing output file.
 | Missing local file | Show a clear file-not-found error |
 | Unsupported format | List valid formats |
 | Unsupported quality | List valid qualities |
+| Missing public captions | Show a clear no-transcript error |
 | Missing `./downloads/` | Create it automatically |
 | Existing conversion output file | Warn and do not overwrite |
 
-## Planned release: v0.2 transcript
-
-The next proposed feature is transcript extraction from public YouTube captions.
-This section is a planning contract, not current behavior.
-
-### Proposed commands
-
-```text
-dlmac transcript <url>
-dlmac transcript <url> --lang id
-dlmac transcript <url> --lang en
-dlmac transcript <url> --format txt
-dlmac transcript <url> --format vtt
-dlmac transcript <url> --format srt
-```
-
-### Proposed behavior
-
-- Download public captions or auto captions through `yt-dlp`.
-- Prefer manually provided captions when available.
-- Fall back to auto captions when manual captions are unavailable.
-- Support Indonesian (`id`) and English (`en`) first.
-- Save output to `./downloads/`.
-- Do not download video for transcript-only commands.
-- Return a clear error when no public transcript is available.
-
-### Transcript non-goals
+## Transcript non-goals
 
 - No login or cookie support.
 - No private, members-only, or restricted videos.
 - No DRM or access restriction bypass.
-- No speech-to-text dependency in v0.2.
-- No AI summary in v0.2.
-- No web UI in v0.2.
+- No speech-to-text dependency.
+- No AI summary.
+- No web UI.
 
 ## General non-goals
 
@@ -143,6 +133,10 @@ rtk ./dlmac video "URL" --quality 720p
 rtk ./dlmac video "URL" --quality 4k
 rtk ./dlmac audio "URL" --format mp3
 rtk ./dlmac audio "URL" --format flac
+rtk ./dlmac transcript "URL" --lang en
+rtk ./dlmac transcript "URL" --lang id
+rtk ./dlmac transcript "URL" --format srt
+rtk ./dlmac transcript "URL" --lang ar
 rtk ./dlmac convert sample.mp4 --to mp3
 rtk ./dlmac convert missing.mp4 --to mp3
 ```

@@ -33,6 +33,12 @@ dlmac audio <url>                   Download best audio (mp3)
 dlmac audio <url> --format mp3      Download audio as mp3
 dlmac audio <url> --format m4a      Download audio as m4a
 dlmac audio <url> --format wav      Download audio as wav
+dlmac transcript <url>              Download transcript as txt (English)
+dlmac transcript <url> --lang id    Download Indonesian transcript
+dlmac transcript <url> --lang en    Download English transcript
+dlmac transcript <url> --format txt Download transcript as plain text
+dlmac transcript <url> --format vtt Download transcript as WebVTT
+dlmac transcript <url> --format srt Download transcript as SRT
 dlmac convert <file> --to mp3       Extract audio from video to mp3
 dlmac convert <file> --to m4a       Extract audio from video to m4a
 dlmac convert <file> --to wav       Extract audio from video to wav
@@ -51,6 +57,9 @@ All downloads saved to `./downloads/`.
 
 # Download audio as mp3
 ./dlmac audio "https://example.com/video" --format mp3
+
+# Download Indonesian transcript as plain text
+./dlmac transcript "https://example.com/video" --lang id
 
 # Extract audio from local video
 ./dlmac convert myvideo.mp4 --to mp3
@@ -91,6 +100,8 @@ video. The result is still a QuickTime-compatible MP4.
 - No playlist support
 - No interactive format selector
 - No login/cookie support
+- Transcript support depends on public captions or auto captions being
+  available for the selected language
 - Quality depends on source video availability; falls back to best available
   below the requested resolution
 

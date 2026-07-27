@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 DOWNLOAD_DIR="downloads"
 
 usage() {
@@ -20,6 +20,12 @@ Usage:
   dlmac audio <url> --format mp3      Download audio as mp3
   dlmac audio <url> --format m4a      Download audio as m4a
   dlmac audio <url> --format wav      Download audio as wav
+  dlmac transcript <url>              Download transcript as txt (English)
+  dlmac transcript <url> --lang id    Download Indonesian transcript
+  dlmac transcript <url> --lang en    Download English transcript
+  dlmac transcript <url> --format txt Download transcript as plain text
+  dlmac transcript <url> --format vtt Download transcript as WebVTT
+  dlmac transcript <url> --format srt Download transcript as SRT
   dlmac convert <file> --to mp3       Extract audio from video to mp3
   dlmac convert <file> --to m4a       Extract audio from video to m4a
   dlmac convert <file> --to wav       Extract audio from video to wav
@@ -233,6 +239,210 @@ cmd_audio() {
     "$url"
 }
 
+clean_vtt_to_txt() {
+  local input_file="$1"
+  local output_file="$2"
+
+  awk '
+    /^WEBVTT/ { next }
+    /^Kind:/ { next }
+    /^Language:/ { next }
+    /^[[:space:]]*$/ { next }
+    /^[0-9]+$/ { next }
+    /-->/ { next }
+    {
+      line = $0
+      gsub(/\r/, "", line)
+      gsub(/<[^>]*>/, "", line)
+      gsub(/&amp;/, "\\&", line)
+      gsub(/&lt;/, "<", line)
+      gsub(/&gt;/, ">", line)
+      gsub(/&quot;/, "\"", line)
+      gsub(/&#39;/, "\047", line)
+      if (line != "" && line != previous) {
+        print line
+        previous = line
+      }
+    }
+  ' "$input_file" > "$output_file"
+}
+
+find_transcript_file() {
+  local tmp_dir="$1"
+  local lang="$2"
+  local ext="$3"
+
+  local matches=()
+  shopt -s nullglob
+  matches=("$tmp_dir"/*."$lang"."$ext")
+  shopt -u nullglob
+
+  if [[ ${#matches[@]} -gt 0 ]]; then
+    printf '%s\n' "${matches[0]}"
+  fi
+}
+
+download_transcript_source() {
+  local source_kind="$1"
+  local tmp_dir="$2"
+  local url="$3"
+  local lang="$4"
+  local output_format="$5"
+
+  local source_ext="vtt"
+  local yt_args=(
+    --skip-download
+    --sub-langs "$lang"
+    --sub-format vtt
+    -o "${tmp_dir}/%(title)s.%(id)s.%(ext)s"
+  )
+
+  case "$source_kind" in
+    manual) yt_args+=(--write-subs) ;;
+    auto) yt_args+=(--write-auto-subs) ;;
+  esac
+
+  if [[ "$output_format" == "srt" ]]; then
+    source_ext="srt"
+    yt_args+=(--convert-subs srt)
+  fi
+
+  local log_file="${tmp_dir}/${source_kind}.log"
+  if ! yt-dlp "${yt_args[@]}" "$url" >"$log_file" 2>&1; then
+    cat "$log_file" >&2
+    return 2
+  fi
+
+  find_transcript_file "$tmp_dir" "$lang" "$source_ext"
+}
+
+cmd_transcript() {
+  if [[ $# -eq 0 ]]; then
+    echo "dlmac: missing URL"
+    echo "Usage: dlmac transcript <url> [--lang id|en] [--format txt|vtt|srt]"
+    exit 1
+  fi
+
+  if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    echo "Usage: dlmac transcript <url> [--lang id|en] [--format txt|vtt|srt]"
+    echo "Download public YouTube captions, default English plain text."
+    exit 0
+  fi
+
+  local url="$1"
+  shift
+
+  local lang="en"
+  local output_format="txt"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --lang)
+        if [[ -z "${2:-}" ]]; then
+          echo "dlmac: --lang requires a value"
+          echo "Valid values: id, en"
+          exit 1
+        fi
+        case "$2" in
+          id|en) lang="$2" ;;
+          *)
+            echo "dlmac: unsupported language '$2'"
+            echo "Valid values: id, en"
+            exit 1
+            ;;
+        esac
+        shift 2
+        ;;
+      --format)
+        if [[ -z "${2:-}" ]]; then
+          echo "dlmac: --format requires a value"
+          echo "Valid values: txt, vtt, srt"
+          exit 1
+        fi
+        case "$2" in
+          txt|vtt|srt) output_format="$2" ;;
+          *)
+            echo "dlmac: unsupported format '$2'"
+            echo "Valid values: txt, vtt, srt"
+            exit 1
+            ;;
+        esac
+        shift 2
+        ;;
+      *)
+        echo "dlmac: unknown option '$1'"
+        echo "Usage: dlmac transcript <url> [--lang id|en] [--format txt|vtt|srt]"
+        exit 1
+        ;;
+    esac
+  done
+
+  require_cmd yt-dlp
+  if [[ "$output_format" == "srt" ]]; then
+    require_cmd ffmpeg
+  fi
+
+  mkdir -p "$DOWNLOAD_DIR"
+
+  local tmp_dir
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dlmac-transcript.XXXXXX")"
+
+  local source_file source_kind source_ext
+  source_ext="vtt"
+  if [[ "$output_format" == "srt" ]]; then
+    source_ext="srt"
+  fi
+
+  local source_status
+
+  source_kind="manual captions"
+  source_status=0
+  source_file="$(download_transcript_source manual "$tmp_dir" "$url" "$lang" "$output_format")" || source_status=$?
+
+  if [[ $source_status -gt 1 ]]; then
+    rm -rf "$tmp_dir"
+    exit 1
+  fi
+
+  if [[ -z "$source_file" ]]; then
+    source_kind="auto captions"
+    source_status=0
+    source_file="$(download_transcript_source auto "$tmp_dir" "$url" "$lang" "$output_format")" || source_status=$?
+    if [[ $source_status -gt 1 ]]; then
+      rm -rf "$tmp_dir"
+      exit 1
+    fi
+  fi
+
+  if [[ -z "$source_file" ]]; then
+    rm -rf "$tmp_dir"
+    echo "dlmac: no public transcript found for language '$lang'"
+    echo "Try another language or check available captions with: yt-dlp --list-subs <url>"
+    exit 1
+  fi
+
+  local source_name base_name output_file
+  source_name="$(basename "$source_file")"
+  base_name="${source_name%."$lang"."$source_ext"}"
+  output_file="${DOWNLOAD_DIR}/${base_name}.${lang}.${output_format}"
+
+  if [[ -f "$output_file" ]]; then
+    rm -rf "$tmp_dir"
+    echo "dlmac: output file already exists: $output_file"
+    echo "Remove it first or choose another output format."
+    exit 1
+  fi
+
+  if [[ "$output_format" == "txt" ]]; then
+    clean_vtt_to_txt "$source_file" "$output_file"
+  else
+    mv "$source_file" "$output_file"
+  fi
+
+  rm -rf "$tmp_dir"
+  echo "Transcript (${source_kind}): $output_file"
+}
+
 cmd_convert() {
   if [[ $# -gt 0 && ("$1" == "--help" || "$1" == "-h") ]]; then
     echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
@@ -338,6 +548,9 @@ main() {
       ;;
     audio)
       cmd_audio "$@"
+      ;;
+    transcript)
+      cmd_transcript "$@"
       ;;
     convert)
       cmd_convert "$@"
