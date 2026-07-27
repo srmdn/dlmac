@@ -27,6 +27,32 @@ Use this workflow for non-trivial changes:
 8. Commit with one clear scope.
 9. Push and open a PR only when the maintainer asks for it.
 
+## Continuation shorthand
+
+When the maintainer says "lanjutkan", "oke lanjutkan", "gas", or a similar
+short continuation prompt, continue the next safe step from the current state.
+
+Use this order:
+
+1. Finish any in-progress file edit.
+2. Run local verification.
+3. Review the diff and status.
+4. Stage files that belong to the active scope.
+5. Commit with a single-scope message.
+6. Push the current branch.
+7. Create or update the PR.
+8. Report the result and the next recommended step.
+
+Do not use shorthand permission for destructive or high-risk actions:
+
+- Force push.
+- Reset, rebase, or history rewrite.
+- Delete unmerged branches.
+- Delete another maintainer's branch.
+- Publish a release or deployment.
+- Add a new dependency.
+- Expand scope beyond `SPEC.md`.
+
 ## Git branch policy
 
 Keep `main` stable and releasable.

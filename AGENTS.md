@@ -84,6 +84,26 @@ rtk git diff
 rtk git status --short --ignored
 ```
 
+## Maintainer shorthand
+
+When the maintainer says "lanjutkan", "oke lanjutkan", "gas", or a similar
+short continuation prompt, continue the next safe step in `docs/workflows.md`.
+
+Treat the prompt as permission to proceed within the active workflow when the
+next step is already implied by the current state. This can include local
+verification, staging, committing, pushing the current branch, creating or
+updating a PR, and reporting the result.
+
+Pause and ask for explicit confirmation before destructive or high-risk actions:
+
+- Force push.
+- Reset, rebase, or history rewrite.
+- Delete unmerged branches.
+- Delete another maintainer's branch.
+- Publish a release or deployment.
+- Add a new dependency.
+- Expand scope beyond `SPEC.md`.
+
 ## Git and delivery
 
 - Keep `main` stable and releasable.
