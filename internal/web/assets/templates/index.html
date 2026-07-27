@@ -9,22 +9,29 @@
   <body>
     <main class="shell">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">localhost only</p>
-          <h1>dlmac transcript</h1>
+        <div class="brand">
+          <span class="brand-mark">dl</span>
+          <div>
+            <p class="eyebrow">127.0.0.1 transcript bench</p>
+            <h1>dlmac</h1>
+          </div>
         </div>
-        <span class="version">{{ .Version }}</span>
+        <div class="status-strip">
+          <span>{{ .Version }}</span>
+          <span>captions only</span>
+          <span>no accounts</span>
+        </div>
       </header>
 
       <section class="workspace" aria-label="Transcript workspace">
         <form class="panel form-panel" id="transcript-form">
           <label class="field">
-            <span>YouTube URL</span>
+            <span><b>01</b> Source URL</span>
             <input id="url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
           </label>
 
           <fieldset>
-            <legend>Language</legend>
+            <legend><b>02</b> Caption Language</legend>
             <div class="segments">
               <label><input type="radio" name="lang" value="en" checked><span>English</span></label>
               <label><input type="radio" name="lang" value="id"><span>Indonesian</span></label>
@@ -32,7 +39,7 @@
           </fieldset>
 
           <fieldset>
-            <legend>Format</legend>
+            <legend><b>03</b> Export Format</legend>
             <div class="segments">
               <label><input type="radio" name="format" value="txt" checked><span>Text</span></label>
               <label><input type="radio" name="format" value="vtt"><span>WebVTT</span></label>
@@ -49,7 +56,7 @@
         <section class="panel output-panel" aria-live="polite">
           <div class="output-header">
             <div>
-              <p class="eyebrow">output</p>
+              <p class="eyebrow">reader pane</p>
               <h2 id="output-title">Ready</h2>
             </div>
             <div class="actions">
@@ -59,7 +66,9 @@
           </div>
 
           <div class="message" id="message">Paste a public video URL, choose the transcript options, and run it locally.</div>
-          <pre id="transcript" tabindex="0"></pre>
+          <div class="paper">
+            <pre id="transcript" tabindex="0"></pre>
+          </div>
         </section>
       </section>
     </main>
