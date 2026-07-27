@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Plan the localhost-only transcript web interface.
+- Add the first localhost-only transcript web interface MVP.
 
 ## v0.2.0
 

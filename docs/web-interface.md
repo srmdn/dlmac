@@ -84,30 +84,27 @@ Expected behavior:
 
 ## Proposed architecture
 
-The current CLI is Bash. A web server needs a stronger structure than Bash can
-comfortably provide.
+The current CLI is Bash. The v0.3 MVP uses a small Go standard-library server
+while keeping the Bash CLI as the transcript engine.
 
 Recommended v0.3 architecture:
 
 ```text
 dlmac                 # existing Bash CLI remains available
-cmd/dlmac-web/        # local web server entry point
-internal/web/         # handlers and templates
-internal/transcript/  # shared transcript runner or wrapper
-web/templates/        # HTML templates
-web/static/           # CSS and small client script
+cmd/dlmac-web/             # local web server entry point
+internal/web/              # handlers and embedded UI assets
+internal/web/assets/       # HTML, CSS, and small client script
 ```
 
 Keep the first implementation simple:
 
-- Prefer Go standard library for the local server if the maintainer approves
-  adding Go as a development dependency.
+- Use Go standard library for the local server.
 - Do not add a JavaScript framework for v0.3.
 - Do not add npm, Vite, React, or Electron for v0.3.
 - Do not rewrite the existing Bash CLI before the web UI proves useful.
 
-If Go is approved, the local server can call the existing `dlmac transcript`
-command first, then extract shared logic later when duplication becomes painful.
+The local server calls the existing `dlmac transcript` command first. Extract
+shared logic later only when duplication becomes painful.
 
 ## Proposed endpoints
 

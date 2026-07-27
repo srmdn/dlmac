@@ -98,19 +98,25 @@ overwrite an existing output file.
 - No AI summary.
 - No web UI in v0.2.
 
-## Planned release: v0.3 local web interface
+## In progress: v0.3 local web interface
 
-The next planned release adds a localhost-only web interface for the transcript
-workflow. This section is a planning contract, not current behavior.
+The next release adds a localhost-only web interface for the transcript
+workflow.
 
-### Proposed commands
+### Dependencies
+
+- Go 1.26 or newer for `dlmac serve` and `dlmac ui`
+
+### Commands
 
 ```text
 dlmac serve
 dlmac ui
 ```
 
-### Proposed behavior
+`dlmac ui` is an alias for `dlmac serve`.
+
+### Behavior
 
 - Start a localhost server on `127.0.0.1`.
 - Choose an available port automatically.
@@ -123,6 +129,12 @@ dlmac ui
 - Show loading, success, empty, and error states.
 - Display the transcript for `txt` output.
 - Provide copy and download controls.
+
+Current MVP behavior:
+
+- Uses Go standard library for the localhost server.
+- Keeps the existing Bash CLI as the transcript engine.
+- Requires running from a full project checkout so server files are available.
 
 ### Web interface non-goals
 
@@ -160,6 +172,8 @@ rtk bash -n dlmac install.sh
 rtk shellcheck dlmac install.sh
 rtk ./dlmac --help
 rtk ./dlmac --version
+rtk go test ./...
+rtk go build ./...
 ```
 
 Manual behavior checks:

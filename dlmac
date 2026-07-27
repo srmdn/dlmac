@@ -3,6 +3,8 @@ set -euo pipefail
 
 VERSION="0.2.0"
 DOWNLOAD_DIR="downloads"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${BASH_SOURCE[0]}")"
 
 usage() {
   cat <<EOF
@@ -26,6 +28,8 @@ Usage:
   dlmac transcript <url> --format txt Download transcript as plain text
   dlmac transcript <url> --format vtt Download transcript as WebVTT
   dlmac transcript <url> --format srt Download transcript as SRT
+  dlmac serve                         Start localhost transcript UI
+  dlmac ui                            Alias for serve
   dlmac convert <file> --to mp3       Extract audio from video to mp3
   dlmac convert <file> --to m4a       Extract audio from video to m4a
   dlmac convert <file> --to wav       Extract audio from video to wav
@@ -34,6 +38,35 @@ Requirements: yt-dlp, ffmpeg (install via Homebrew)
 Output: ./downloads/
 EOF
   exit "${1:-0}"
+}
+
+cmd_serve() {
+  if [[ $# -gt 0 && ("$1" == "--help" || "$1" == "-h") ]]; then
+    echo "Usage: dlmac serve"
+    echo "Start the localhost-only transcript web interface."
+    exit 0
+  fi
+
+  if [[ $# -gt 0 ]]; then
+    echo "dlmac: unknown option '$1'"
+    echo "Usage: dlmac serve"
+    exit 1
+  fi
+
+  require_cmd go
+
+  if [[ ! -d "${SCRIPT_DIR}/cmd/dlmac-web" ]]; then
+    echo "dlmac: web server files not found next to ${SCRIPT_PATH}"
+    echo "Run this command from the project checkout or keep the full project on PATH."
+    exit 1
+  fi
+
+  local work_dir="$PWD"
+
+  (
+    cd "$SCRIPT_DIR"
+    go run ./cmd/dlmac-web --dlmac "$SCRIPT_PATH" --workdir "$work_dir"
+  )
 }
 
 require_cmd() {
@@ -551,6 +584,9 @@ main() {
       ;;
     transcript)
       cmd_transcript "$@"
+      ;;
+    serve|ui)
+      cmd_serve "$@"
       ;;
     convert)
       cmd_convert "$@"
