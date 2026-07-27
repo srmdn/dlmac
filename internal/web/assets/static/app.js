@@ -97,16 +97,17 @@ tabs.forEach((tab) => {
 document.querySelector("#transcript-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
+  const payload = {
+    url: form.elements.url.value.trim(),
+    lang: selected(form, "lang"),
+    format: selected(form, "format"),
+  };
   resetActions();
   setBusy(form, true);
   showState("Working", "Fetching public captions through dlmac...");
 
   try {
-    const data = await postJSON("/api/transcript", {
-      url: form.elements.url.value.trim(),
-      lang: selected(form, "lang"),
-      format: selected(form, "format"),
-    });
+    const data = await postJSON("/api/transcript", payload);
     finishSuccess("Transcript Saved", data, "Transcript saved. Use Download to open the file.");
   } catch (error) {
     showState("Needs Attention", error.message);
@@ -124,18 +125,19 @@ downloadForm.addEventListener("change", () => {
 downloadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
+  const kind = selected(form, "kind");
+  const payload = {
+    url: form.elements.url.value.trim(),
+    kind,
+    quality: selected(form, "quality"),
+    audioFormat: selected(form, "audioFormat"),
+  };
   resetActions();
   setBusy(form, true);
   showState("Downloading", "dlmac is downloading through yt-dlp...");
 
   try {
-    const kind = selected(form, "kind");
-    const data = await postJSON("/api/download", {
-      url: form.elements.url.value.trim(),
-      kind,
-      quality: selected(form, "quality"),
-      audioFormat: selected(form, "audioFormat"),
-    });
+    const data = await postJSON("/api/download", payload);
     finishSuccess(kind === "video" ? "Video Saved" : "Audio Saved", data, "Download finished.");
   } catch (error) {
     showState("Needs Attention", error.message);
@@ -147,15 +149,16 @@ downloadForm.addEventListener("submit", async (event) => {
 document.querySelector("#convert-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
+  const payload = {
+    file: form.elements.file.value.trim(),
+    to: selected(form, "to"),
+  };
   resetActions();
   setBusy(form, true);
   showState("Converting", "ffmpeg is converting the local file...");
 
   try {
-    const data = await postJSON("/api/convert", {
-      file: form.elements.file.value.trim(),
-      to: selected(form, "to"),
-    });
+    const data = await postJSON("/api/convert", payload);
     finishSuccess("File Converted", data, "Conversion finished.");
   } catch (error) {
     showState("Needs Attention", error.message);
