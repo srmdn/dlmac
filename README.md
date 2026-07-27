@@ -1,6 +1,8 @@
 # dlmac
 
-macOS CLI wrapper for [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [ffmpeg](https://ffmpeg.org). Download online media and extract audio from local video files.
+macOS CLI wrapper for [yt-dlp](https://github.com/yt-dlp/yt-dlp) and
+[ffmpeg](https://ffmpeg.org). Download online media, extract audio from local
+video files, and save public YouTube transcripts.
 
 ## Requirements
 
@@ -18,6 +20,10 @@ cd dlmac
 ```
 
 `install.sh` checks dependencies and offers to install missing ones via Homebrew.
+
+To run `dlmac` from any directory, add the project directory to your `PATH` or
+copy the executable to a directory that is already in your `PATH`, such as
+`~/.local/bin`.
 
 ## Usage
 
@@ -60,6 +66,9 @@ All downloads saved to `./downloads/`.
 
 # Download Indonesian transcript as plain text
 ./dlmac transcript "https://example.com/video" --lang id
+
+# Run globally if dlmac is installed in PATH
+dlmac transcript "https://example.com/video" --lang en --format txt
 
 # Extract audio from local video
 ./dlmac convert myvideo.mp4 --to mp3
