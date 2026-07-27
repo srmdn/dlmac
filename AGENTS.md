@@ -90,6 +90,42 @@ rtk git diff
 rtk git status --short --ignored
 ```
 
+## Session handoffs
+
+When the maintainer asks to "buat handoff", "buatkan handoff", "write a
+handoff", or similar, write a private local handoff immediately.
+
+Use this location:
+
+```text
+.local/handoffs/YYYY-MM-DD-topic.md
+```
+
+Also read and follow:
+
+```text
+.local/README.md
+.local/handoffs/README.md
+```
+
+If the handoff directory or README files do not exist, create them first. Keep
+all handoff files under `.local/` so they remain private and ignored.
+
+Each handoff must include:
+
+- Snapshot: branch, status, current head, tags, and release state.
+- What happened: decisions, commits, PRs, merges, tags, and releases.
+- Current product state: what works now and what is not implemented yet.
+- Important files: public files and private `.local` files to read next.
+- Next recommended steps: concrete commands and ordered actions.
+- Verification already run: commands and notable results.
+- Open decisions: unresolved choices and tradeoffs.
+- Risks and boundaries: safety, legal, dependency, and scope constraints.
+
+Do not include secrets, tokens, VPS credentials, private infrastructure details,
+or anything that belongs in a password manager. Do not stage or commit handoff
+files unless the maintainer explicitly asks to change the public handoff policy.
+
 ## Maintainer shorthand
 
 When the maintainer says "lanjutkan", "oke lanjutkan", "gas", or a similar
