@@ -96,7 +96,45 @@ overwrite an existing output file.
 - No DRM or access restriction bypass.
 - No speech-to-text dependency.
 - No AI summary.
-- No web UI.
+- No web UI in v0.2.
+
+## Planned release: v0.3 local web interface
+
+The next planned release adds a localhost-only web interface for the transcript
+workflow. This section is a planning contract, not current behavior.
+
+### Proposed commands
+
+```text
+dlmac serve
+dlmac ui
+```
+
+### Proposed behavior
+
+- Start a localhost server on `127.0.0.1`.
+- Choose an available port automatically.
+- Print the local URL in the terminal.
+- Open the local URL in the default browser on macOS.
+- Let the user paste a YouTube URL.
+- Let the user choose `id` or `en`.
+- Let the user choose `txt`, `vtt`, or `srt`.
+- Run the existing transcript workflow.
+- Show loading, success, empty, and error states.
+- Display the transcript for `txt` output.
+- Provide copy and download controls.
+
+### Web interface non-goals
+
+- No hosted deployment in v0.3.
+- No accounts.
+- No database.
+- No cloud storage.
+- No AI summary.
+- No speech-to-text.
+- No clipper in v0.3.
+- No login, cookie, or private video support.
+- No design reuse from `plong`.
 
 ## General non-goals
 
