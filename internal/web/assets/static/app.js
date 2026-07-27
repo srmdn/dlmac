@@ -82,12 +82,17 @@ function enablePrimaryDownload(data) {
 }
 
 function finishSuccess(title, data, fallbackText) {
+  const files = data.files || (data.file ? [{ file: data.file, download: data.download }] : []);
   outputTitle.textContent = title;
-  message.textContent = data.file || (data.files || []).map((file) => file.file).join(" | ") || "Done";
+  message.textContent = data.file || files.map((file) => file.file).join(" | ") || "Done";
   output.textContent = data.text || data.output || fallbackText;
-  showFiles(data.files);
+  showFiles(files);
   enablePrimaryDownload(data);
   copyButton.disabled = !output.textContent.trim();
+}
+
+function finishError(error) {
+  showState("Needs Attention", "dlmac reported an error.", error.message);
 }
 
 tabs.forEach((tab) => {
@@ -110,7 +115,7 @@ document.querySelector("#transcript-form").addEventListener("submit", async (eve
     const data = await postJSON("/api/transcript", payload);
     finishSuccess("Transcript Saved", data, "Transcript saved. Use Download to open the file.");
   } catch (error) {
-    showState("Needs Attention", error.message);
+    finishError(error);
   } finally {
     setBusy(form, false);
   }
@@ -140,7 +145,7 @@ downloadForm.addEventListener("submit", async (event) => {
     const data = await postJSON("/api/download", payload);
     finishSuccess(kind === "video" ? "Video Saved" : "Audio Saved", data, "Download finished.");
   } catch (error) {
-    showState("Needs Attention", error.message);
+    finishError(error);
   } finally {
     setBusy(form, false);
   }
@@ -161,7 +166,7 @@ document.querySelector("#convert-form").addEventListener("submit", async (event)
     const data = await postJSON("/api/convert", payload);
     finishSuccess("File Converted", data, "Conversion finished.");
   } catch (error) {
-    showState("Needs Attention", error.message);
+    finishError(error);
   } finally {
     setBusy(form, false);
   }

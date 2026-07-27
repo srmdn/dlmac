@@ -258,18 +258,17 @@ cmd_audio() {
 
   mkdir -p "$DOWNLOAD_DIR"
 
-  local extra_args=()
+  local yt_args=(
+    -f "bestaudio"
+    -x
+    --audio-format "$audio_format"
+    -o "${DOWNLOAD_DIR}/%(title)s.%(ext)s"
+  )
   if [[ "$audio_format" == "mp3" ]]; then
-    extra_args=(--audio-quality 0)
+    yt_args+=(--audio-quality 0)
   fi
 
-  yt-dlp \
-    -f "bestaudio" \
-    -x \
-    --audio-format "$audio_format" \
-    "${extra_args[@]}" \
-    -o "${DOWNLOAD_DIR}/%(title)s.%(ext)s" \
-    "$url"
+  yt-dlp "${yt_args[@]}" "$url"
 }
 
 clean_vtt_to_txt() {
