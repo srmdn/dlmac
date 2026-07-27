@@ -117,6 +117,38 @@ h2 {
   color: #fff;
 }
 
+.mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 14px;
+  border: 2px solid var(--line);
+  background: var(--panel);
+}
+
+.mode-tab {
+  min-height: 46px;
+  border: 0;
+  border-left: 2px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-weight: 950;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.mode-tab:first-child {
+  border-left: 0;
+}
+
+.mode-tab.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.mode-tab:not(.active):hover {
+  background: var(--mark);
+}
+
 .workspace {
   display: grid;
   grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
@@ -130,7 +162,17 @@ h2 {
   background: var(--panel);
 }
 
-.form-panel {
+.control-panel {
+  overflow: hidden;
+}
+
+.mode-panel {
+  display: none;
+  align-content: start;
+  gap: 0;
+}
+
+.mode-panel.active {
   display: grid;
   align-content: start;
   gap: 0;
@@ -166,7 +208,8 @@ legend b {
   font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-input[type="url"] {
+input[type="url"],
+input[type="text"] {
   width: 100%;
   min-height: 48px;
   border: 2px solid var(--line);
@@ -176,7 +219,8 @@ input[type="url"] {
   background: #fff;
 }
 
-input[type="url"]:focus {
+input[type="url"]:focus,
+input[type="text"]:focus {
   outline: 3px solid var(--mark);
   outline-offset: 2px;
 }
@@ -186,6 +230,10 @@ input[type="url"]:focus {
   grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   gap: 0;
   border: 2px solid var(--line);
+}
+
+.segments.dense {
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
 }
 
 .segments label {
@@ -339,6 +387,35 @@ input[type="url"]:focus {
   overflow-wrap: anywhere;
 }
 
+.file-list {
+  display: grid;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 2px solid var(--line);
+  background: #fff;
+}
+
+.file-list[hidden] {
+  display: none;
+}
+
+.file-list a {
+  display: block;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  color: var(--ink);
+  background: var(--mark);
+  font: 800 0.84rem/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.file-list a:hover {
+  background: var(--accent-2);
+  color: #fff;
+}
+
 .paper {
   min-height: 0;
   background:
@@ -359,13 +436,15 @@ pre {
 
 @media (max-width: 820px) {
   .shell {
-    width: min(100vw - 18px, 620px);
+    width: min(100vw - 18px, 760px);
     padding: 10px 0;
   }
 
   .topbar,
   .output-header {
     display: grid;
+    grid-template-columns: 1fr;
+    justify-content: stretch;
   }
 
   .brand-mark {
@@ -396,11 +475,28 @@ pre {
     grid-template-columns: 1fr;
   }
 
+  .mode-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-tab {
+    border-top: 2px solid var(--line);
+    border-left: 0;
+  }
+
+  .mode-tab:first-child {
+    border-top: 0;
+  }
+
   .output-panel {
     min-height: 520px;
   }
 
   .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    justify-self: stretch;
     border-top: 2px solid var(--line);
     border-left: 0;
   }

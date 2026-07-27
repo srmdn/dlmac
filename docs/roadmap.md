@@ -53,15 +53,16 @@ Out of scope for v0.2:
 ## Next: local web tool
 
 The next release should build a localhost-only web interface around the
-transcript command. This should happen before clipper work.
+existing safe single-item commands. This should happen before clipper work.
 
 MVP screen:
 
-- URL input
-- Language selector
-- Format selector
-- Run button
-- Transcript viewer
+- Mode tabs for transcript, download, and convert
+- URL input for transcript/download
+- Local file path input for convert
+- Language, quality, and format selectors
+- Run buttons
+- Output viewer
 - Copy and download buttons
 
 Recommended boundary:

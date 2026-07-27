@@ -28,7 +28,7 @@ Usage:
   dlmac transcript <url> --format txt Download transcript as plain text
   dlmac transcript <url> --format vtt Download transcript as WebVTT
   dlmac transcript <url> --format srt Download transcript as SRT
-  dlmac serve                         Start localhost transcript UI
+  dlmac serve                         Start localhost web UI
   dlmac ui                            Alias for serve
   dlmac convert <file> --to mp3       Extract audio from video to mp3
   dlmac convert <file> --to m4a       Extract audio from video to m4a
@@ -43,7 +43,7 @@ EOF
 cmd_serve() {
   if [[ $# -gt 0 && ("$1" == "--help" || "$1" == "-h") ]]; then
     echo "Usage: dlmac serve"
-    echo "Start the localhost-only transcript web interface."
+    echo "Start the localhost-only web interface."
     exit 0
   fi
 

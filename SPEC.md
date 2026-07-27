@@ -100,8 +100,8 @@ overwrite an existing output file.
 
 ## In progress: v0.3 local web interface
 
-The next release adds a localhost-only web interface for the transcript
-workflow.
+The next release adds a localhost-only web interface for the main `dlmac`
+workflows.
 
 ### Dependencies
 
@@ -122,13 +122,17 @@ dlmac ui
 - Choose an available port automatically.
 - Print the local URL in the terminal.
 - Open the local URL in the default browser on macOS.
+- Let the user choose transcript, download, or convert mode.
 - Let the user paste a YouTube URL.
 - Let the user choose `id` or `en`.
 - Let the user choose `txt`, `vtt`, or `srt`.
 - Run the existing transcript workflow.
+- Let the user download video as MP4 with optional quality selection.
+- Let the user download audio as `mp3`, `m4a`, or `wav`.
+- Let the user convert a local video path to `mp3`, `m4a`, or `wav`.
 - Show loading, success, empty, and error states.
 - Display the transcript for `txt` output.
-- Provide copy and download controls.
+- Provide copy and download controls when output files are available.
 
 Current MVP behavior:
 
@@ -146,6 +150,7 @@ Current MVP behavior:
 - No speech-to-text.
 - No clipper in v0.3.
 - No login, cookie, or private video support.
+- No browser credential, cookie, or session import.
 - No design reuse from `plong`.
 
 ## General non-goals

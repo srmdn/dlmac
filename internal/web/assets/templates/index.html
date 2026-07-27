@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>dlmac transcript</title>
+    <title>dlmac workbench</title>
     <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
@@ -12,51 +12,120 @@
         <div class="brand">
           <span class="brand-mark">dl</span>
           <div>
-            <p class="eyebrow">127.0.0.1 transcript bench</p>
+            <p class="eyebrow">127.0.0.1 media workbench</p>
             <h1>dlmac</h1>
           </div>
         </div>
         <div class="status-strip">
           <span>{{ .Version }}</span>
-          <span>captions only</span>
+          <span>local only</span>
           <span>no accounts</span>
         </div>
       </header>
 
-      <section class="workspace" aria-label="Transcript workspace">
-        <form class="panel form-panel" id="transcript-form">
-          <label class="field">
-            <span><b>01</b> Source URL</span>
-            <input id="url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
-          </label>
+      <nav class="mode-tabs" aria-label="Workbench mode">
+        <button type="button" class="mode-tab active" data-mode="transcript">Transcript</button>
+        <button type="button" class="mode-tab" data-mode="download">Download</button>
+        <button type="button" class="mode-tab" data-mode="convert">Convert</button>
+      </nav>
 
-          <fieldset>
-            <legend><b>02</b> Caption Language</legend>
-            <div class="segments">
-              <label><input type="radio" name="lang" value="en" checked><span>English</span></label>
-              <label><input type="radio" name="lang" value="id"><span>Indonesian</span></label>
-            </div>
-          </fieldset>
+      <section class="workspace" aria-label="dlmac workspace">
+        <section class="panel control-panel">
+          <form class="mode-panel active" id="transcript-form" data-mode-panel="transcript">
+            <label class="field">
+              <span><b>01</b> Source URL</span>
+              <input id="transcript-url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
+            </label>
 
-          <fieldset>
-            <legend><b>03</b> Export Format</legend>
-            <div class="segments">
-              <label><input type="radio" name="format" value="txt" checked><span>Text</span></label>
-              <label><input type="radio" name="format" value="vtt"><span>WebVTT</span></label>
-              <label><input type="radio" name="format" value="srt"><span>SRT</span></label>
-            </div>
-          </fieldset>
+            <fieldset>
+              <legend><b>02</b> Caption Language</legend>
+              <div class="segments">
+                <label><input type="radio" name="lang" value="en" checked><span>English</span></label>
+                <label><input type="radio" name="lang" value="id"><span>Indonesian</span></label>
+              </div>
+            </fieldset>
 
-          <button class="primary" type="submit" id="submit-button">
-            <span class="button-label">Get Transcript</span>
-            <span class="spinner" aria-hidden="true"></span>
-          </button>
-        </form>
+            <fieldset>
+              <legend><b>03</b> Export Format</legend>
+              <div class="segments">
+                <label><input type="radio" name="format" value="txt" checked><span>Text</span></label>
+                <label><input type="radio" name="format" value="vtt"><span>WebVTT</span></label>
+                <label><input type="radio" name="format" value="srt"><span>SRT</span></label>
+              </div>
+            </fieldset>
+
+            <button class="primary" type="submit">
+              <span class="button-label">Get Transcript</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <form class="mode-panel" id="download-form" data-mode-panel="download">
+            <label class="field">
+              <span><b>01</b> Source URL</span>
+              <input id="download-url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
+            </label>
+
+            <fieldset>
+              <legend><b>02</b> Media Type</legend>
+              <div class="segments">
+                <label><input type="radio" name="kind" value="video" checked><span>Video</span></label>
+                <label><input type="radio" name="kind" value="audio"><span>Audio</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset data-download-options="video">
+              <legend><b>03</b> Video Quality</legend>
+              <div class="segments dense">
+                <label><input type="radio" name="quality" value="best" checked><span>Best</span></label>
+                <label><input type="radio" name="quality" value="360p"><span>360p</span></label>
+                <label><input type="radio" name="quality" value="480p"><span>480p</span></label>
+                <label><input type="radio" name="quality" value="720p"><span>720p</span></label>
+                <label><input type="radio" name="quality" value="1080p"><span>1080p</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset data-download-options="audio" hidden>
+              <legend><b>03</b> Audio Format</legend>
+              <div class="segments">
+                <label><input type="radio" name="audioFormat" value="mp3" checked><span>MP3</span></label>
+                <label><input type="radio" name="audioFormat" value="m4a"><span>M4A</span></label>
+                <label><input type="radio" name="audioFormat" value="wav"><span>WAV</span></label>
+              </div>
+            </fieldset>
+
+            <button class="primary" type="submit">
+              <span class="button-label">Start Download</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <form class="mode-panel" id="convert-form" data-mode-panel="convert">
+            <label class="field">
+              <span><b>01</b> Local File Path</span>
+              <input id="convert-file" name="file" type="text" placeholder="/Users/said/Movies/source.mp4" autocomplete="off" required>
+            </label>
+
+            <fieldset>
+              <legend><b>02</b> Output Format</legend>
+              <div class="segments">
+                <label><input type="radio" name="to" value="mp3" checked><span>MP3</span></label>
+                <label><input type="radio" name="to" value="m4a"><span>M4A</span></label>
+                <label><input type="radio" name="to" value="wav"><span>WAV</span></label>
+              </div>
+            </fieldset>
+
+            <button class="primary" type="submit">
+              <span class="button-label">Convert File</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+        </section>
 
         <section class="panel output-panel" aria-live="polite">
           <div class="output-header">
             <div>
-              <p class="eyebrow">reader pane</p>
+              <p class="eyebrow">run output</p>
               <h2 id="output-title">Ready</h2>
             </div>
             <div class="actions">
@@ -65,9 +134,10 @@
             </div>
           </div>
 
-          <div class="message" id="message">Paste a public video URL, choose the transcript options, and run it locally.</div>
+          <div class="message" id="message">Pick a mode, set the options, and run dlmac locally.</div>
+          <div class="file-list" id="file-list" hidden></div>
           <div class="paper">
-            <pre id="transcript" tabindex="0"></pre>
+            <pre id="output" tabindex="0"></pre>
           </div>
         </section>
       </section>
