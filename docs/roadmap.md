@@ -12,18 +12,19 @@ then clip extraction, then optional AI-assisted workflows.
 
 ## Current state
 
-v0.1 is complete as a shippable CLI:
+v0.2 is complete as a shippable CLI:
 
 - Show media info.
 - List formats.
 - Download QuickTime-compatible MP4 video.
 - Download MP3, M4A, or WAV audio.
+- Download public YouTube transcripts in English or Indonesian.
 - Extract audio from local video files.
 
-## Next: v0.2 transcript
+## Current: transcript
 
-Add a `transcript` command that turns a public YouTube URL into a downloadable
-caption file.
+The `transcript` command turns a public YouTube URL into a downloadable caption
+file.
 
 Target workflow:
 
