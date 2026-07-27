@@ -10,6 +10,7 @@ video files, and save public YouTube transcripts.
 - [Homebrew](https://brew.sh)
 - yt-dlp
 - ffmpeg
+- Go 1.26 or newer for the optional local web interface
 
 ## Installation
 
@@ -45,6 +46,8 @@ dlmac transcript <url> --lang en    Download English transcript
 dlmac transcript <url> --format txt Download transcript as plain text
 dlmac transcript <url> --format vtt Download transcript as WebVTT
 dlmac transcript <url> --format srt Download transcript as SRT
+dlmac serve                          Start localhost web UI
+dlmac ui                             Alias for serve
 dlmac convert <file> --to mp3       Extract audio from video to mp3
 dlmac convert <file> --to m4a       Extract audio from video to m4a
 dlmac convert <file> --to wav       Extract audio from video to wav
@@ -69,6 +72,9 @@ All downloads saved to `./downloads/`.
 
 # Run globally if dlmac is installed in PATH
 dlmac transcript "https://example.com/video" --lang en --format txt
+
+# Start the local web interface
+./dlmac serve
 
 # Extract audio from local video
 ./dlmac convert myvideo.mp4 --to mp3
@@ -111,6 +117,8 @@ video. The result is still a QuickTime-compatible MP4.
 - No login/cookie support
 - Transcript support depends on public captions or auto captions being
   available for the selected language
+- The local web interface requires Go and must be run from a full project
+  checkout
 - Quality depends on source video availability; falls back to best available
   below the requested resolution
 

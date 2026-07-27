@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Plan the localhost-only transcript web interface.
+- Add the first localhost-only web interface MVP for transcript, download, and
+  convert workflows.
 
 ## v0.2.0
 

@@ -2,10 +2,12 @@
 
 ## Purpose
 
-The local web interface gives `dlmac` a friendly transcript workflow:
+The local web interface gives `dlmac` a friendly local workbench for the core
+single-item workflows:
 
 ```text
-paste YouTube URL -> choose language -> choose format -> get transcript
+paste URL -> choose transcript/download options -> run dlmac
+paste local file path -> choose audio format -> convert
 ```
 
 It is a localhost-only tool. It is not a hosted product, and it must not add
@@ -40,12 +42,14 @@ Reference: <https://github.com/elayadesign/redesign-skill>
 
 ### v0.3 MVP
 
-The first web release should support only transcripts:
+The first web release supports the existing safe CLI workflows:
 
 - Paste a public YouTube URL.
-- Choose `English` or `Indonesian`.
-- Choose `Text`, `WebVTT`, or `SRT`.
-- Run transcript extraction.
+- Run transcript extraction with `English` or `Indonesian` captions.
+- Save transcripts as `Text`, `WebVTT`, or `SRT`.
+- Download video with optional quality selection.
+- Download audio as `MP3`, `M4A`, or `WAV`.
+- Convert a local video file path to `MP3`, `M4A`, or `WAV`.
 - Show progress while the command runs.
 - Show inline errors from `yt-dlp` or `dlmac`.
 - Display plain text transcripts in the page.
@@ -63,6 +67,7 @@ The first web release should support only transcripts:
 - Clipper.
 - Batch jobs.
 - Login, cookie, or private video support.
+- Browser-session or credential import.
 
 ## Proposed command
 
@@ -79,41 +84,40 @@ Expected behavior:
 2. Pick an available port.
 3. Print the URL.
 4. Open the browser on macOS.
-5. Serve the transcript interface.
+5. Serve the local workbench interface.
 6. Stop when the terminal process exits.
 
 ## Proposed architecture
 
-The current CLI is Bash. A web server needs a stronger structure than Bash can
-comfortably provide.
+The current CLI is Bash. The v0.3 MVP uses a small Go standard-library server
+while keeping the Bash CLI as the engine.
 
 Recommended v0.3 architecture:
 
 ```text
 dlmac                 # existing Bash CLI remains available
-cmd/dlmac-web/        # local web server entry point
-internal/web/         # handlers and templates
-internal/transcript/  # shared transcript runner or wrapper
-web/templates/        # HTML templates
-web/static/           # CSS and small client script
+cmd/dlmac-web/             # local web server entry point
+internal/web/              # handlers and embedded UI assets
+internal/web/assets/       # HTML, CSS, and small client script
 ```
 
 Keep the first implementation simple:
 
-- Prefer Go standard library for the local server if the maintainer approves
-  adding Go as a development dependency.
+- Use Go standard library for the local server.
 - Do not add a JavaScript framework for v0.3.
 - Do not add npm, Vite, React, or Electron for v0.3.
 - Do not rewrite the existing Bash CLI before the web UI proves useful.
 
-If Go is approved, the local server can call the existing `dlmac transcript`
-command first, then extract shared logic later when duplication becomes painful.
+The local server calls the existing `dlmac transcript` command first. Extract
+shared logic later only when duplication becomes painful.
 
 ## Proposed endpoints
 
 ```text
 GET  /               Render interface
 POST /api/transcript Run transcript extraction
+POST /api/download   Run video or audio download
+POST /api/convert    Run local file conversion
 GET  /downloads/...  Serve saved transcript files from downloads/
 ```
 
@@ -148,18 +152,19 @@ Response on error:
 
 ## Interface direction
 
-Design a transcript workspace, not a dashboard.
+Design a compact media workbench, not a dashboard.
 
 Recommended layout:
 
 - Single-column command surface on small screens.
-- Two-panel layout on desktop: request form on the left, transcript output on
-  the right.
+- Two-panel layout on desktop: mode controls on the left, run output on the
+  right.
 - Compact header with product name, version, and local-only status.
-- URL input as the primary object.
+- Mode tabs for transcript, download, and convert.
+- URL or local file path input as the primary object.
 - Segmented controls for language and format.
-- One primary action: get transcript.
-- Output area with copy and download buttons.
+- One primary action per mode.
+- Output area with copy, download, and saved file links.
 
 Visual direction:
 
@@ -192,8 +197,11 @@ Manual browser checks:
 
 - Page loads at localhost.
 - URL validation shows inline errors.
+- Layout does not overflow at desktop, tablet, or mobile widths.
 - English transcript request succeeds for a video with public captions.
 - Indonesian request shows a clear error when captions are unavailable.
 - Text transcript can be copied.
 - VTT and SRT transcripts can be downloaded.
+- Video and audio download requests show saved files when available.
+- Local conversion returns a saved output file.
 - The interface works on desktop and mobile widths.
