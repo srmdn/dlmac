@@ -50,10 +50,10 @@ Out of scope for v0.2:
 - Database
 - Background jobs
 
-## Later: local web tool
+## Next: local web tool
 
-After the transcript command is stable, build a local web interface around the
-CLI engine.
+The next release should build a localhost-only web interface around the
+transcript command. This should happen before clipper work.
 
 MVP screen:
 
@@ -67,7 +67,12 @@ MVP screen:
 Recommended boundary:
 
 - Keep `dlmac` as the engine.
-- Keep the web app thin.
+- Keep the web app thin and localhost-only.
+- Do not deploy it.
+- Do not visually copy `plong`.
+- Use `plong` only as an architecture reference for local server behavior.
+- Apply the redesign-skill approach when polishing the interface: diagnose
+  before changing, avoid generic AI design patterns, and ship complete states.
 - Do not add hosted accounts, subscriptions, or team features.
 - Do not copy broad all-in-one AI product scope.
 

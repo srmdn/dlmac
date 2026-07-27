@@ -27,6 +27,8 @@ Use this workflow for non-trivial changes:
 8. Commit with one clear scope.
 9. Push and open a PR only when the maintainer asks for it.
 
+For local web UI work, also read `docs/web-interface.md` before implementation.
+
 ## Continuation shorthand
 
 When the maintainer says "lanjutkan", "oke lanjutkan", "gas", or a similar
@@ -64,6 +66,9 @@ codex/transcript-command
 codex/repo-structure
 codex/local-web-mvp
 ```
+
+Use `codex/local-web-planning` for documentation-only web planning, and
+`codex/local-web-mvp` for the first implementation.
 
 Delete a branch after its PR is merged when:
 

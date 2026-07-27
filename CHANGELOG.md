@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Plan the localhost-only transcript web interface.
+
 ## v0.2.0
 
 - Add `dlmac transcript` for public YouTube captions and auto captions.

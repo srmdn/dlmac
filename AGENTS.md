@@ -6,8 +6,9 @@
 It downloads permitted online media, extracts audio, and keeps output in
 `./downloads/`.
 
-The current product is a small CLI. A local web interface may be added later,
-but the CLI stays the core engine unless the maintainer changes that direction.
+The current product is a small CLI. The next product layer is a localhost-only
+web interface for the transcript workflow, but the CLI stays the core engine
+unless the maintainer changes that direction.
 
 ## Read before acting
 
@@ -17,6 +18,7 @@ Before changing behavior, structure, dependencies, or documentation, read:
 2. `SPEC.md`
 3. `docs/roadmap.md`
 4. `docs/workflows.md`
+5. `docs/web-interface.md` when working on local web UI.
 
 Private notes, handoffs, local agent state, and environment-specific material
 belong in `.local/` or `.sisyphus/`. These directories must stay ignored and
@@ -60,9 +62,13 @@ Pass public URLs to `yt-dlp`; do not build access-circumvention flows.
 - Keep local agent continuation state in `.sisyphus/`.
 - Keep downloaded media and conversion output in `downloads/`.
 
-For the planned transcript feature, prefer public YouTube captions exposed by
-`yt-dlp`. Do not add speech-to-text, AI summarization, accounts, queues, or a
-web server until the maintainer approves that scope.
+For transcript features, prefer public YouTube captions exposed by `yt-dlp`.
+Do not add speech-to-text, AI summarization, accounts, queues, deployment, or
+hosted services until the maintainer approves that scope.
+
+For the local web interface, keep it localhost-only. Use `docs/web-interface.md`
+as the contract. The interface should not visually copy `plong`; only reuse the
+local-server architecture lessons that fit `dlmac`.
 
 ## Runtime and verification
 
