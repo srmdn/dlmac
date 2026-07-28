@@ -11,34 +11,51 @@
       <header class="topbar">
         <div class="brand">
           <span class="brand-mark">dl</span>
-          <div>
-            <p class="eyebrow">127.0.0.1 media workbench</p>
+          <div class="brand-copy">
+            <p class="eyebrow">Local media studio</p>
             <h1>dlmac</h1>
+            <p class="brand-note">Download, transcribe, and convert from one quiet workspace.</p>
           </div>
         </div>
-        <div class="status-strip">
+        <div class="status-strip" aria-label="Application status">
+          <span class="status-live"><i aria-hidden="true"></i>Local only</span>
           <span>{{ .Version }}</span>
-          <span>local only</span>
-          <span>no accounts</span>
+          <span>No accounts</span>
         </div>
       </header>
 
       <nav class="mode-tabs" aria-label="Workbench mode">
-        <button type="button" class="mode-tab active" data-mode="transcript">Transcript</button>
-        <button type="button" class="mode-tab" data-mode="download">Download</button>
-        <button type="button" class="mode-tab" data-mode="convert">Convert</button>
+        <button type="button" class="mode-tab active" data-mode="transcript">
+          <span>Transcript</span>
+          <small>Captions to text</small>
+        </button>
+        <button type="button" class="mode-tab" data-mode="download">
+          <span>Download</span>
+          <small>Video or audio</small>
+        </button>
+        <button type="button" class="mode-tab" data-mode="convert">
+          <span>Convert</span>
+          <small>Local media</small>
+        </button>
       </nav>
 
       <section class="workspace" aria-label="dlmac workspace">
         <section class="panel control-panel">
+          <div class="panel-intro">
+            <p class="eyebrow">New job</p>
+            <h2>Set up your run</h2>
+            <p>Choose the source and output. Everything stays on this Mac.</p>
+          </div>
+
           <form class="mode-panel active" id="transcript-form" data-mode-panel="transcript">
             <label class="field">
-              <span><b>01</b> Source URL</span>
+              <span>Source URL</span>
               <input id="transcript-url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
+              <small>Public YouTube video with captions.</small>
             </label>
 
             <fieldset>
-              <legend><b>02</b> Caption Language</legend>
+              <legend>Caption language</legend>
               <div class="segments">
                 <label><input type="radio" name="lang" value="en" checked><span>English</span></label>
                 <label><input type="radio" name="lang" value="id"><span>Indonesian</span></label>
@@ -46,7 +63,7 @@
             </fieldset>
 
             <fieldset>
-              <legend><b>03</b> Export Format</legend>
+              <legend>Export format</legend>
               <div class="segments">
                 <label><input type="radio" name="format" value="txt" checked><span>Text</span></label>
                 <label><input type="radio" name="format" value="vtt"><span>WebVTT</span></label>
@@ -62,12 +79,13 @@
 
           <form class="mode-panel" id="download-form" data-mode-panel="download">
             <label class="field">
-              <span><b>01</b> Source URL</span>
+              <span>Source URL</span>
               <input id="download-url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" required>
+              <small>Use content you own or have permission to download.</small>
             </label>
 
             <fieldset>
-              <legend><b>02</b> Media Type</legend>
+              <legend>Media type</legend>
               <div class="segments">
                 <label><input type="radio" name="kind" value="video" checked><span>Video</span></label>
                 <label><input type="radio" name="kind" value="audio"><span>Audio</span></label>
@@ -75,7 +93,7 @@
             </fieldset>
 
             <fieldset data-download-options="video">
-              <legend><b>03</b> Video Quality</legend>
+              <legend>Video quality</legend>
               <div class="segments dense">
                 <label><input type="radio" name="quality" value="best" checked><span>Best</span></label>
                 <label><input type="radio" name="quality" value="360p"><span>360p</span></label>
@@ -86,7 +104,7 @@
             </fieldset>
 
             <fieldset data-download-options="audio" hidden>
-              <legend><b>03</b> Audio Format</legend>
+              <legend>Audio format</legend>
               <div class="segments">
                 <label><input type="radio" name="audioFormat" value="mp3" checked><span>MP3</span></label>
                 <label><input type="radio" name="audioFormat" value="m4a"><span>M4A</span></label>
@@ -102,12 +120,13 @@
 
           <form class="mode-panel" id="convert-form" data-mode-panel="convert">
             <label class="field">
-              <span><b>01</b> Local File Path</span>
+              <span>Local file path</span>
               <input id="convert-file" name="file" type="text" placeholder="/Users/said/Movies/source.mp4" autocomplete="off" required>
+              <small>Paste an absolute path to a video on this Mac.</small>
             </label>
 
             <fieldset>
-              <legend><b>02</b> Output Format</legend>
+              <legend>Output format</legend>
               <div class="segments">
                 <label><input type="radio" name="to" value="mp3" checked><span>MP3</span></label>
                 <label><input type="radio" name="to" value="m4a"><span>M4A</span></label>
@@ -125,7 +144,7 @@
         <section class="panel output-panel" aria-live="polite">
           <div class="output-header">
             <div>
-              <p class="eyebrow">run output</p>
+              <p class="eyebrow">Run output</p>
               <h2 id="output-title">Ready</h2>
             </div>
             <div class="actions">
