@@ -10,7 +10,7 @@ video files, and save public YouTube transcripts.
 - [Homebrew](https://brew.sh)
 - yt-dlp
 - ffmpeg
-- Go 1.26 or newer for the optional local web interface
+- Go 1.26 or newer to build the optional local web interface
 
 ## Installation
 
@@ -20,11 +20,15 @@ cd dlmac
 ./install.sh
 ```
 
-`install.sh` checks dependencies and offers to install missing ones via Homebrew.
+`install.sh` checks dependencies, offers to install missing ones via Homebrew,
+and builds the `dlmac-web` helper next to the CLI.
 
 To run `dlmac` from any directory, add the project directory to your `PATH` or
-copy the executable to a directory that is already in your `PATH`, such as
-`~/.local/bin`.
+copy both `dlmac` and `dlmac-web` to a directory that is already in your
+`PATH`, such as `~/.local/bin`.
+
+The compiled web helper does not require Go or the project source tree at
+runtime. Keep `dlmac` and `dlmac-web` in the same directory.
 
 ## Usage
 
@@ -109,6 +113,10 @@ This is normal when the source doesn't provide H.264+AAC natively.
 The download will take longer because ffmpeg must re-encode the entire
 video. The result is still a QuickTime-compatible MP4.
 
+**"web helper not found" message appears**
+Run `./install.sh` from the project checkout to build `dlmac-web`. If you copy
+the CLI to another directory, copy `dlmac-web` with it.
+
 ## Limitations
 
 - macOS only
@@ -117,8 +125,7 @@ video. The result is still a QuickTime-compatible MP4.
 - No login/cookie support
 - Transcript support depends on public captions or auto captions being
   available for the selected language
-- The local web interface requires Go and must be run from a full project
-  checkout
+- Building the local web interface requires Go 1.26 or newer
 - Quality depends on source video availability; falls back to best available
   below the requested resolution
 

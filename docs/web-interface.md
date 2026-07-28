@@ -95,10 +95,11 @@ while keeping the Bash CLI as the engine.
 Current v0.3 architecture:
 
 ```text
-dlmac                 # existing Bash CLI remains available
-cmd/dlmac-web/             # local web server entry point
-internal/web/              # handlers and embedded UI assets
-internal/web/assets/       # HTML, CSS, and small client script
+dlmac                 # existing Bash CLI and helper launcher
+dlmac-web             # compiled local web server helper
+cmd/dlmac-web/        # local web server source entry point
+internal/web/         # handlers and embedded UI assets
+internal/web/assets/  # HTML, CSS, and small client script
 ```
 
 Keep the implementation simple:
@@ -111,6 +112,10 @@ Keep the implementation simple:
 The local server calls the existing `dlmac transcript`, `video`, `audio`, and
 `convert` commands. Extract shared logic later only when duplication becomes
 painful.
+
+`install.sh` builds `dlmac-web` next to `dlmac`. The CLI runs that helper
+without requiring Go or the source tree at runtime. A development checkout can
+fall back to `go run ./cmd/dlmac-web` when the compiled helper is absent.
 
 ## Current endpoints
 
@@ -187,6 +192,7 @@ rtk ./dlmac --help
 rtk ./dlmac transcript --help
 rtk go test ./...
 rtk go build ./...
+rtk ./install.sh
 ```
 
 Manual browser checks:

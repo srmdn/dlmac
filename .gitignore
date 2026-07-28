@@ -43,3 +43,6 @@ __pycache__/
 
 # Shell
 *.log
+
+# Local build output
+/dlmac-web
