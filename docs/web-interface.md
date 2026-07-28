@@ -26,7 +26,7 @@ Use `plong` as an architecture reference, not a visual reference:
 - It uses small JSON endpoints for actions.
 
 Do not copy `plong`'s visual design. `plong` is a dark disk dashboard. `dlmac`
-needs a calmer transcript workspace.
+uses a calmer media workspace.
 
 Use the `elayadesign/redesign-skill` approach when polishing the interface:
 
@@ -69,7 +69,7 @@ The first web release supports the existing safe CLI workflows:
 - Login, cookie, or private video support.
 - Browser-session or credential import.
 
-## Proposed command
+## Current commands
 
 ```text
 dlmac serve
@@ -78,7 +78,7 @@ dlmac ui
 
 `serve` is the primary command. `ui` can be an alias.
 
-Expected behavior:
+Behavior:
 
 1. Start a local server on `127.0.0.1`.
 2. Pick an available port.
@@ -87,12 +87,12 @@ Expected behavior:
 5. Serve the local workbench interface.
 6. Stop when the terminal process exits.
 
-## Proposed architecture
+## Current architecture
 
 The current CLI is Bash. The v0.3 MVP uses a small Go standard-library server
 while keeping the Bash CLI as the engine.
 
-Recommended v0.3 architecture:
+Current v0.3 architecture:
 
 ```text
 dlmac                 # existing Bash CLI remains available
@@ -101,24 +101,25 @@ internal/web/              # handlers and embedded UI assets
 internal/web/assets/       # HTML, CSS, and small client script
 ```
 
-Keep the first implementation simple:
+Keep the implementation simple:
 
 - Use Go standard library for the local server.
 - Do not add a JavaScript framework for v0.3.
 - Do not add npm, Vite, React, or Electron for v0.3.
 - Do not rewrite the existing Bash CLI before the web UI proves useful.
 
-The local server calls the existing `dlmac transcript` command first. Extract
-shared logic later only when duplication becomes painful.
+The local server calls the existing `dlmac transcript`, `video`, `audio`, and
+`convert` commands. Extract shared logic later only when duplication becomes
+painful.
 
-## Proposed endpoints
+## Current endpoints
 
 ```text
 GET  /               Render interface
 POST /api/transcript Run transcript extraction
 POST /api/download   Run video or audio download
 POST /api/convert    Run local file conversion
-GET  /downloads/...  Serve saved transcript files from downloads/
+GET  /downloads/...  Serve saved output files from downloads/
 ```
 
 `POST /api/transcript` input:
@@ -152,9 +153,9 @@ Response on error:
 
 ## Interface direction
 
-Design a compact media workbench, not a dashboard.
+The interface uses a compact media workbench rather than a dashboard.
 
-Recommended layout:
+Current layout:
 
 - Single-column command surface on small screens.
 - Two-panel layout on desktop: mode controls on the left, run output on the
@@ -177,18 +178,13 @@ Visual direction:
 
 ## Verification
 
-Before opening a PR for the web MVP:
+Before releasing v0.3 or changing web behavior, run:
 
 ```bash
 rtk bash -n dlmac install.sh
 rtk shellcheck dlmac install.sh
 rtk ./dlmac --help
 rtk ./dlmac transcript --help
-```
-
-If Go is added:
-
-```bash
 rtk go test ./...
 rtk go build ./...
 ```

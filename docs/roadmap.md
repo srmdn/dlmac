@@ -2,17 +2,18 @@
 
 ## Direction
 
-`dlmac` stays a small local media CLI first. The next valuable direction is a
-transcript workflow for public YouTube captions, followed by an optional local
-web interface that makes the same workflow easier to use.
+`dlmac` stays a small local media CLI first. The CLI remains the engine, and the
+localhost web workbench provides a friendlier interface for the same safe,
+single-item workflows.
 
 Long term, `dlmac` can grow into a local-first YouTube learning and clipping
-tool. The product should move in layers: transcript first, simple web UI next,
-then clip extraction, then optional AI-assisted workflows.
+tool. The product moves in layers: release the current web workbench, stabilize
+local workflows, add manual clip extraction, and consider optional AI-assisted
+features only after the core workflows are reliable.
 
 ## Current state
 
-v0.2 is complete as a shippable CLI:
+v0.2 is the latest release. It provides a shippable CLI that can:
 
 - Show media info.
 - List formats.
@@ -21,7 +22,16 @@ v0.2 is complete as a shippable CLI:
 - Download public YouTube transcripts in English or Indonesian.
 - Extract audio from local video files.
 
-## Current: transcript
+The `main` branch also includes the unreleased v0.3 local web workbench. It can:
+
+- Download transcripts in Text, WebVTT, or SRT format.
+- Download video with a quality limit.
+- Download audio as MP3, M4A, or WAV.
+- Convert a local video file to MP3, M4A, or WAV.
+- Display text transcripts and link to saved output files.
+- Run entirely on `127.0.0.1` without accounts or hosted services.
+
+## Released: v0.2 transcript
 
 The `transcript` command turns a public YouTube URL into a downloadable caption
 file.
@@ -50,12 +60,13 @@ Out of scope for v0.2:
 - Database
 - Background jobs
 
-## Next: local web tool
+## Current: v0.3 release hardening
 
-The next release should build a localhost-only web interface around the
-existing safe single-item commands. This should happen before clipper work.
+The local web workbench implementation is complete on `main`. The remaining
+v0.3 work focuses on packaging, documentation, regression testing, and release
+readiness.
 
-MVP screen:
+Implemented:
 
 - Mode tabs for transcript, download, and convert
 - URL input for transcript/download
@@ -65,17 +76,21 @@ MVP screen:
 - Output viewer
 - Copy and download buttons
 
-Recommended boundary:
+Before releasing v0.3:
 
-- Keep `dlmac` as the engine.
-- Keep the web app thin and localhost-only.
-- Do not deploy it.
-- Do not visually copy `plong`.
-- Use `plong` only as an architecture reference for local server behavior.
-- Apply the redesign-skill approach when polishing the interface: diagnose
-  before changing, avoid generic AI design patterns, and ship complete states.
-- Do not add hosted accounts, subscriptions, or team features.
-- Do not copy broad all-in-one AI product scope.
+- Decide whether to package a compiled `dlmac-web` helper.
+- Verify installation and web startup from a fresh clone.
+- Run CLI, Go, and browser regression checks.
+- Update the version, release notes, and current-behavior documentation.
+- Keep the workbench thin, localhost-only, and dependency-light.
+
+## Candidate after v0.3: local activity history
+
+Consider local activity history only after v0.3 is released. If approved, it
+can record recent transcript, download, and convert runs without adding
+accounts or a database.
+
+This remains a candidate, not committed release scope.
 
 ## Later: YouTube clipper
 
@@ -164,9 +179,9 @@ Do not rewrite into a larger stack until one of these is true:
 
 ## Future ideas
 
-Consider these only after the transcript workflow works well:
+Consider these only after the v0.3 workbench is released and stable:
 
-- Local transcript history
+- Local activity history
 - Markdown export
 - Chapter extraction from timestamps
 - Optional AI summary

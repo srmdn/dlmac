@@ -98,10 +98,10 @@ overwrite an existing output file.
 - No AI summary.
 - No web UI in v0.2.
 
-## In progress: v0.3 local web interface
+## Unreleased: v0.3 local web workbench
 
-The next release adds a localhost-only web interface for the main `dlmac`
-workflows.
+The `main` branch includes a localhost-only web interface for the main `dlmac`
+workflows. This workbench is planned for the v0.3 release.
 
 ### Dependencies
 
@@ -134,11 +134,18 @@ dlmac ui
 - Display the transcript for `txt` output.
 - Provide copy and download controls when output files are available.
 
-Current MVP behavior:
+Implementation:
 
 - Uses Go standard library for the localhost server.
-- Keeps the existing Bash CLI as the transcript engine.
+- Keeps the existing Bash CLI as the workflow engine.
 - Requires running from a full project checkout so server files are available.
+
+Release readiness work:
+
+- Decide whether to install a compiled `dlmac-web` helper.
+- Verify installation and startup from a fresh clone.
+- Update the version and release documentation.
+- Run CLI, Go, and browser regression checks.
 
 ### Web interface non-goals
 

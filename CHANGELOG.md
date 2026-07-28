@@ -2,9 +2,15 @@
 
 ## Unreleased
 
-- Plan the localhost-only transcript web interface.
-- Add the first localhost-only web interface MVP for transcript, download, and
-  convert workflows.
+- Add a localhost-only web workbench for transcript, download, and convert
+  workflows.
+- Support transcript language and format selection, video quality limits,
+  audio formats, and local media conversion.
+- Display text transcripts, command output, errors, and saved file links.
+- Add responsive desktop, tablet, and mobile layouts.
+- Redesign the workbench with a calmer local media studio interface.
+- Fix web form payload capture, audio format handling, error presentation, and
+  saved transcript file listings.
 
 ## v0.2.0
 
