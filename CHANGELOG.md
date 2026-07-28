@@ -11,6 +11,8 @@
 - Redesign the workbench with a calmer local media studio interface.
 - Fix web form payload capture, audio format handling, error presentation, and
   saved transcript file listings.
+- Build and run a compiled `dlmac-web` helper without requiring the source tree
+  or Go at runtime.
 
 ## v0.2.0
 

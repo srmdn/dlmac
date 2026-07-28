@@ -105,7 +105,7 @@ workflows. This workbench is planned for the v0.3 release.
 
 ### Dependencies
 
-- Go 1.26 or newer for `dlmac serve` and `dlmac ui`
+- Go 1.26 or newer to build the local web helper during installation
 
 ### Commands
 
@@ -138,11 +138,27 @@ Implementation:
 
 - Uses Go standard library for the localhost server.
 - Keeps the existing Bash CLI as the workflow engine.
-- Requires running from a full project checkout so server files are available.
+- Installs a compiled `dlmac-web` helper next to the Bash CLI.
+- Runs the compiled helper without requiring Go or the source tree at runtime.
+- Falls back to `go run ./cmd/dlmac-web` in a development checkout when the
+  compiled helper is unavailable.
+
+### Web helper packaging
+
+`install.sh` builds `dlmac-web` into a temporary file and moves it into place
+only after the build succeeds. Re-running the installer safely replaces both
+the helper and its executable permissions.
+
+`dlmac serve` and `dlmac ui` look for an executable named `dlmac-web` in the
+same directory as `dlmac`. If the helper is unavailable, a development
+checkout can run the Go source directly. An installed CLI without either form
+shows a clear error and asks the user to run the installer.
+
+To move an installed copy to another directory, copy both `dlmac` and
+`dlmac-web`.
 
 Release readiness work:
 
-- Decide whether to install a compiled `dlmac-web` helper.
 - Verify installation and startup from a fresh clone.
 - Update the version and release documentation.
 - Run CLI, Go, and browser regression checks.

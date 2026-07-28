@@ -78,7 +78,7 @@ Implemented:
 
 Before releasing v0.3:
 
-- Decide whether to package a compiled `dlmac-web` helper.
+- Verify the compiled `dlmac-web` helper from an installed layout.
 - Verify installation and web startup from a fresh clone.
 - Run CLI, Go, and browser regression checks.
 - Update the version, release notes, and current-behavior documentation.

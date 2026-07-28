@@ -53,20 +53,22 @@ cmd_serve() {
     exit 1
   fi
 
-  require_cmd go
-
-  if [[ ! -d "${SCRIPT_DIR}/cmd/dlmac-web" ]]; then
-    echo "dlmac: web server files not found next to ${SCRIPT_PATH}"
-    echo "Run this command from the project checkout or keep the full project on PATH."
-    exit 1
-  fi
-
+  local web_helper="${SCRIPT_DIR}/dlmac-web"
   local work_dir="$PWD"
 
-  (
+  if [[ -x "$web_helper" ]]; then
+    exec "$web_helper" --dlmac "$SCRIPT_PATH" --workdir "$work_dir"
+  fi
+
+  if [[ -d "${SCRIPT_DIR}/cmd/dlmac-web" ]]; then
+    require_cmd go
     cd "$SCRIPT_DIR"
-    go run ./cmd/dlmac-web --dlmac "$SCRIPT_PATH" --workdir "$work_dir"
-  )
+    exec go run ./cmd/dlmac-web --dlmac "$SCRIPT_PATH" --workdir "$work_dir"
+  fi
+
+  echo "dlmac: web helper not found next to ${SCRIPT_PATH}"
+  echo "Run install.sh to build dlmac-web, then keep both executables together."
+  exit 1
 }
 
 require_cmd() {
