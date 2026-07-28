@@ -564,13 +564,20 @@ pre {
 
 @media (max-width: 520px) {
   .topbar {
-    display: grid;
-    gap: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .status-strip {
+    flex: 0 0 auto;
     justify-content: flex-start;
-    padding-left: 60px;
+    margin-left: auto;
+    padding-left: 0;
+  }
+
+  .status-strip span:not(.status-live) {
+    display: none;
   }
 
   .panel-intro,
@@ -592,6 +599,15 @@ pre {
   .file-list {
     padding-right: 16px;
     padding-left: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .status-live {
+    width: 32px;
+    padding: 0 !important;
+    justify-content: center;
+    font-size: 0 !important;
   }
 }
 
