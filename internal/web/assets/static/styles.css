@@ -134,8 +134,9 @@ h2 {
 }
 
 .mode-tabs {
-  display: inline-grid;
-  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   margin-bottom: 16px;
   border: 1px solid var(--line);
@@ -275,7 +276,11 @@ input[type="text"]:focus {
 }
 
 .segments.dense {
-  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.mode-panel fieldset[hidden] {
+  display: none;
 }
 
 .segments label {
