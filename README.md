@@ -4,6 +4,8 @@ macOS CLI wrapper for [yt-dlp](https://github.com/yt-dlp/yt-dlp) and
 [ffmpeg](https://ffmpeg.org). Download online media, extract audio from local
 video files, and save public YouTube transcripts.
 
+![dlmac local web workbench](docs/assets/dlmac-workbench.webp)
+
 ## Requirements
 
 - macOS
