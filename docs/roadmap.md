@@ -13,17 +13,14 @@ features only after the core workflows are reliable.
 
 ## Current state
 
-v0.2 is the latest release. It provides a shippable CLI that can:
+v0.3 is the latest release. It provides a shippable CLI and local web
+workbench that can:
 
 - Show media info.
 - List formats.
 - Download QuickTime-compatible MP4 video.
 - Download MP3, M4A, or WAV audio.
 - Download public YouTube transcripts in English or Indonesian.
-- Extract audio from local video files.
-
-The `main` branch also includes the unreleased v0.3 local web workbench. It can:
-
 - Download transcripts in Text, WebVTT, or SRT format.
 - Download video with a quality limit.
 - Download audio as MP3, M4A, or WAV.
@@ -60,11 +57,10 @@ Out of scope for v0.2:
 - Database
 - Background jobs
 
-## Current: v0.3 release hardening
+## Released: v0.3 local web workbench
 
-The local web workbench implementation is complete on `main`. The remaining
-v0.3 work focuses on packaging, documentation, regression testing, and release
-readiness.
+The local web workbench wraps the existing safe CLI workflows in a
+localhost-only browser interface.
 
 Implemented:
 
@@ -76,13 +72,11 @@ Implemented:
 - Output viewer
 - Copy and download buttons
 
-Before releasing v0.3:
+Release boundaries:
 
-- Verify the compiled `dlmac-web` helper from an installed layout.
-- Verify installation and web startup from a fresh clone.
-- Run CLI, Go, and browser regression checks.
-- Update the version, release notes, and current-behavior documentation.
 - Keep the workbench thin, localhost-only, and dependency-light.
+- Keep accounts, hosted services, private-video workflows, AI summary, and
+  speech-to-text outside the release scope.
 
 ## Candidate after v0.3: local activity history
 
