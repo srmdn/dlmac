@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- No changes yet.
+
+## v0.3.0
+
 - Add a localhost-only web workbench for transcript, download, and convert
   workflows.
 - Support transcript language and format selection, video quality limits,

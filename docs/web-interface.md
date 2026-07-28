@@ -183,7 +183,7 @@ Visual direction:
 
 ## Verification
 
-Before releasing v0.3 or changing web behavior, run:
+Before changing web behavior, run:
 
 ```bash
 rtk bash -n dlmac install.sh

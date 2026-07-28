@@ -5,7 +5,7 @@
 `dlmac` is a local macOS CLI wrapper for `yt-dlp` and `ffmpeg`. It downloads
 permitted online media and extracts audio from local video files.
 
-## Current release: v0.2
+## Current release: v0.3
 
 ### Dependencies
 
@@ -14,6 +14,7 @@ permitted online media and extracts audio from local video files.
 - `yt-dlp`
 - `ffmpeg`
 - Bash
+- Go 1.26 or newer to build the local web helper during installation
 
 ### Supported commands
 
@@ -35,6 +36,8 @@ dlmac transcript <url> --lang en
 dlmac transcript <url> --format txt
 dlmac transcript <url> --format vtt
 dlmac transcript <url> --format srt
+dlmac serve
+dlmac ui
 dlmac convert <file> --to mp3
 dlmac convert <file> --to m4a
 dlmac convert <file> --to wav
@@ -70,6 +73,10 @@ captions for the selected language.
 `dlmac transcript <url> --format txt|vtt|srt` saves the transcript in the
 selected format. Plain text is the default.
 
+`dlmac serve` starts the localhost-only web interface.
+
+`dlmac ui` is an alias for `dlmac serve`.
+
 `dlmac convert <file> --to mp3|m4a|wav` extracts audio from a local video file.
 The output goes to `./downloads/`, preserves the base filename, and does not
 overwrite an existing output file.
@@ -86,6 +93,7 @@ overwrite an existing output file.
 | Unsupported format | List valid formats |
 | Unsupported quality | List valid qualities |
 | Missing public captions | Show a clear no-transcript error |
+| Missing web helper in an installed layout | Ask the user to run the installer |
 | Missing `./downloads/` | Create it automatically |
 | Existing conversion output file | Warn and do not overwrite |
 
@@ -96,16 +104,10 @@ overwrite an existing output file.
 - No DRM or access restriction bypass.
 - No speech-to-text dependency.
 - No AI summary.
-- No web UI in v0.2.
+## Local web workbench
 
-## Unreleased: v0.3 local web workbench
-
-The `main` branch includes a localhost-only web interface for the main `dlmac`
-workflows. This workbench is planned for the v0.3 release.
-
-### Dependencies
-
-- Go 1.26 or newer to build the local web helper during installation
+The current release includes a localhost-only web interface for the main
+`dlmac` workflows.
 
 ### Commands
 
@@ -157,21 +159,15 @@ shows a clear error and asks the user to run the installer.
 To move an installed copy to another directory, copy both `dlmac` and
 `dlmac-web`.
 
-Release readiness work:
-
-- Verify installation and startup from a fresh clone.
-- Update the version and release documentation.
-- Run CLI, Go, and browser regression checks.
-
 ### Web interface non-goals
 
-- No hosted deployment in v0.3.
+- No hosted deployment.
 - No accounts.
 - No database.
 - No cloud storage.
 - No AI summary.
 - No speech-to-text.
-- No clipper in v0.3.
+- No clipper.
 - No login, cookie, or private video support.
 - No browser credential, cookie, or session import.
 - No design reuse from `plong`.
