@@ -82,6 +82,9 @@ func TestConvertRunsDLMACAndReturnsFile(t *testing.T) {
 	}
 
 	workDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(workDir, "clip.mp4"), []byte("video bytes"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	fakeDLMAC := filepath.Join(workDir, "dlmac-fake")
 	script := `#!/bin/sh
 set -eu
@@ -96,7 +99,7 @@ printf 'Converted: downloads/clip.m4a\n'
 	}
 
 	server := NewServer(Config{DLMACPath: fakeDLMAC, WorkDir: workDir})
-	body := bytes.NewBufferString(`{"file":"/tmp/clip.mp4","to":"m4a"}`)
+	body := bytes.NewBufferString(`{"file":"clip.mp4","to":"m4a"}`)
 	request := httptest.NewRequest(http.MethodPost, "/api/convert", body)
 	response := httptest.NewRecorder()
 
@@ -107,6 +110,101 @@ printf 'Converted: downloads/clip.m4a\n'
 	}
 	if !strings.Contains(response.Body.String(), "/downloads/clip.m4a") {
 		t.Fatalf("expected convert download link, got %q", response.Body.String())
+	}
+}
+
+func TestInspectReturnsMediaMetadata(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("test uses a POSIX shell script")
+	}
+
+	workDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(workDir, "clip.webm"), []byte("video bytes"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	fakeFFprobe := filepath.Join(workDir, "ffprobe-fake")
+	script := `#!/bin/sh
+set -eu
+cat <<'EOF'
+{"streams":[{"codec_type":"video","width":1920,"height":1080},{"codec_type":"audio"}],"format":{"duration":"74.4"}}
+EOF
+`
+	if err := os.WriteFile(fakeFFprobe, []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	server := NewServer(Config{FFprobePath: fakeFFprobe, WorkDir: workDir})
+	body := bytes.NewBufferString(`{"file":"clip.webm"}`)
+	request := httptest.NewRequest(http.MethodPost, "/api/inspect", body)
+	response := httptest.NewRecorder()
+
+	server.Routes().ServeHTTP(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", response.Code, response.Body.String())
+	}
+	for _, expected := range []string{`"kind":"video"`, `"sizeLabel":"11 B"`, `"dimensions":"1920×1080"`, `"duration":"1:14"`} {
+		if !strings.Contains(response.Body.String(), expected) {
+			t.Fatalf("expected %s in response, got %q", expected, response.Body.String())
+		}
+	}
+}
+
+func TestConvertRejectsUnsupportedTarget(t *testing.T) {
+	server := NewServer(Config{WorkDir: t.TempDir()})
+	body := bytes.NewBufferString(`{"file":"clip.webm","to":"avi"}`)
+	request := httptest.NewRequest(http.MethodPost, "/api/convert", body)
+	response := httptest.NewRecorder()
+
+	server.Routes().ServeHTTP(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "supported target format") {
+		t.Fatalf("expected supported-target error, got %q", response.Body.String())
+	}
+}
+
+func TestCapabilitiesReportsWebPSupport(t *testing.T) {
+	binDir := t.TempDir()
+	for _, name := range []string{"cwebp", "gif2webp"} {
+		path := filepath.Join(binDir, name)
+		if err := os.WriteFile(path, []byte("#!/bin/sh\nexit 0\n"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Setenv("PATH", binDir)
+
+	server := NewServer(Config{WorkDir: t.TempDir()})
+	request := httptest.NewRequest(http.MethodGet, "/api/capabilities", nil)
+	response := httptest.NewRecorder()
+
+	server.Routes().ServeHTTP(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", response.Code, response.Body.String())
+	}
+	if !strings.Contains(response.Body.String(), `"webp":true`) {
+		t.Fatalf("expected WebP capability, got %q", response.Body.String())
+	}
+}
+
+func TestConvertRejectsWebPWithoutTools(t *testing.T) {
+	t.Setenv("PATH", t.TempDir())
+	server := NewServer(Config{WorkDir: t.TempDir()})
+	body := bytes.NewBufferString(`{"file":"artwork.png","to":"webp"}`)
+	request := httptest.NewRequest(http.MethodPost, "/api/convert", body)
+	response := httptest.NewRecorder()
+
+	server.Routes().ServeHTTP(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "WebP conversion is unavailable") {
+		t.Fatalf("expected WebP availability error, got %q", response.Body.String())
 	}
 }
 

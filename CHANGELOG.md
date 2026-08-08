@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- No changes yet.
+## v0.4.0
+
+- Expand local conversion to curated video, audio, and image target formats.
+- Add WebP image output through the official Homebrew `webp` tools.
+- Detect WebP encoder availability before showing the target in the web UI.
+- Add a native macOS file picker and media inspection to the local workbench.
+- Update the Convert UI with selected-file metadata and dynamic target groups.
 
 ## v0.3.0
 

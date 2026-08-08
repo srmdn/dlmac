@@ -1,8 +1,8 @@
 # dlmac
 
 macOS CLI wrapper for [yt-dlp](https://github.com/yt-dlp/yt-dlp) and
-[ffmpeg](https://ffmpeg.org). Download online media, extract audio from local
-video files, and save public YouTube transcripts.
+[ffmpeg](https://ffmpeg.org). Download online media, convert local media, and
+save public YouTube transcripts.
 
 ![dlmac local web workbench](docs/assets/dlmac-workbench.webp)
 
@@ -12,6 +12,7 @@ video files, and save public YouTube transcripts.
 - [Homebrew](https://brew.sh)
 - yt-dlp
 - ffmpeg
+- webp (provides the `cwebp` and `gif2webp` encoders)
 - Go 1.26 or newer to build the optional local web interface
 
 ## Installation
@@ -54,9 +55,7 @@ dlmac transcript <url> --format vtt Download transcript as WebVTT
 dlmac transcript <url> --format srt Download transcript as SRT
 dlmac serve                          Start localhost web UI
 dlmac ui                             Alias for serve
-dlmac convert <file> --to mp3       Extract audio from video to mp3
-dlmac convert <file> --to m4a       Extract audio from video to m4a
-dlmac convert <file> --to wav       Extract audio from video to wav
+dlmac convert <file> --to <format>   Convert local video, audio, or image media
 ```
 
 All downloads saved to `./downloads/`.
@@ -82,9 +81,43 @@ dlmac transcript "https://example.com/video" --lang en --format txt
 # Start the local web interface
 ./dlmac serve
 
-# Extract audio from local video
+# Convert a local video to a QuickTime-compatible MP4
+./dlmac convert myvideo.webm --to mp4
+
+# Extract audio from a local video
 ./dlmac convert myvideo.mp4 --to mp3
+
+# Convert a local image
+./dlmac convert artwork.png --to tiff
+
+# Convert a local image to WebP
+./dlmac convert artwork.png --to webp
+
+# Convert a local audio file
+./dlmac convert recording.wav --to flac
 ```
+
+### Local conversion
+
+`dlmac convert <file> --to <format>` accepts one local media file and saves the
+result in `./downloads/` without overwriting an existing file. Supported target
+formats are:
+
+- Video: `mp4`, `webm`, `mkv`, and `mov`.
+- Audio: `mp3`, `m4a`, `wav`, `flac`, `ogg`, and `opus`.
+- Images: `jpg`, `png`, `gif`, `tiff`, and `webp`.
+
+Video targets re-encode when needed. The `mkv` target can preserve compatible
+streams without re-encoding. Audio targets remove the video stream, and image
+targets export the first video frame when the input contains video.
+
+The local web workbench provides a native macOS file picker. It sends only the
+selected path to the localhost server; it does not upload the media file to a
+remote service.
+
+WebP output uses the official `cwebp` encoder from the Homebrew `webp`
+package. Animated GIF input uses the companion `gif2webp` encoder. The local
+web workbench shows the WebP target only when those tools are available.
 
 ## Compatibility
 
@@ -119,11 +152,17 @@ video. The result is still a QuickTime-compatible MP4.
 Run `./install.sh` from the project checkout to build `dlmac-web`. If you copy
 the CLI to another directory, copy `dlmac-web` with it.
 
+**WebP output is unavailable**
+Install the official WebP tools with `brew install webp`, then run
+`./install.sh` again. The local web interface hides WebP when `cwebp` or
+`gif2webp` is unavailable.
+
 ## Limitations
 
 - macOS only
 - No playlist support
-- No interactive format selector
+- No interactive format selector in the CLI; the local web workbench provides
+  a curated format selector
 - No login/cookie support
 - Transcript support depends on public captions or auto captions being
   available for the selected language

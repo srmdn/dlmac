@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.3.0"
+VERSION="0.4.0"
 DOWNLOAD_DIR="downloads"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${BASH_SOURCE[0]}")"
@@ -30,11 +30,9 @@ Usage:
   dlmac transcript <url> --format srt Download transcript as SRT
   dlmac serve                         Start localhost web UI
   dlmac ui                            Alias for serve
-  dlmac convert <file> --to mp3       Extract audio from video to mp3
-  dlmac convert <file> --to m4a       Extract audio from video to m4a
-  dlmac convert <file> --to wav       Extract audio from video to wav
+  dlmac convert <file> --to <format> Convert local video, audio, or image media
 
-Requirements: yt-dlp, ffmpeg (install via Homebrew)
+Requirements: yt-dlp, ffmpeg, webp (install via Homebrew)
 Output: ./downloads/
 EOF
   exit "${1:-0}"
@@ -78,6 +76,42 @@ require_cmd() {
     echo "Install with: brew install $cmd"
     exit 1
   fi
+}
+
+resolve_webp_tool() {
+  local tool="$1"
+  local override=""
+
+  case "$tool" in
+    cwebp) override="${DLMAC_CWEBP_PATH:-}" ;;
+    gif2webp) override="${DLMAC_GIF2WEBP_PATH:-}" ;;
+  esac
+
+  if [[ -n "$override" && -x "$override" ]]; then
+    printf '%s\n' "$override"
+    return 0
+  fi
+
+  local bundled="${SCRIPT_DIR}/.dlmac/bin/${tool}"
+  if [[ -x "$bundled" ]]; then
+    printf '%s\n' "$bundled"
+    return 0
+  fi
+
+  command -v "$tool" 2>/dev/null
+}
+
+require_webp_tool() {
+  local tool="$1"
+  local tool_path
+
+  if ! tool_path="$(resolve_webp_tool "$tool")"; then
+    echo "dlmac: '$tool' not found."
+    echo "Install WebP tools with: brew install webp"
+    exit 1
+  fi
+
+  printf '%s\n' "$tool_path"
 }
 
 cmd_info() {
@@ -478,15 +512,17 @@ cmd_transcript() {
 }
 
 cmd_convert() {
+  local supported_formats="mp4|webm|mkv|mov|mp3|m4a|wav|flac|ogg|opus|jpg|png|gif|tiff|webp"
+
   if [[ $# -gt 0 && ("$1" == "--help" || "$1" == "-h") ]]; then
-    echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
-    echo "Extract audio from local video file."
+    echo "Usage: dlmac convert <file> --to ${supported_formats}"
+    echo "Convert one local video, audio, or image file."
     exit 0
   fi
 
   if [[ $# -lt 2 ]]; then
     echo "dlmac: missing arguments"
-    echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+    echo "Usage: dlmac convert <file> --to ${supported_formats}"
     exit 1
   fi
 
@@ -500,14 +536,16 @@ cmd_convert() {
       --to)
         if [[ -z "${2:-}" ]]; then
           echo "dlmac: --to requires a value"
-          echo "Valid values: mp3, m4a, wav"
+          echo "Valid values: ${supported_formats//|/, }"
           exit 1
         fi
         case "$2" in
-          mp3|m4a|wav) output_format="$2" ;;
+          mp4|webm|mkv|mov|mp3|m4a|wav|flac|ogg|opus|jpg|jpeg|png|gif|tiff|webp)
+            output_format="$2"
+            ;;
           *)
             echo "dlmac: unsupported format '$2'"
-            echo "Valid values: mp3, m4a, wav"
+            echo "Valid values: ${supported_formats//|/, }"
             exit 1
             ;;
         esac
@@ -515,7 +553,7 @@ cmd_convert() {
         ;;
       *)
         echo "dlmac: unknown option '$1'"
-        echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+        echo "Usage: dlmac convert <file> --to ${supported_formats}"
         exit 1
         ;;
     esac
@@ -523,8 +561,12 @@ cmd_convert() {
 
   if [[ -z "$output_format" ]]; then
     echo "dlmac: missing --to flag"
-    echo "Usage: dlmac convert <file> --to mp3|m4a|wav"
+    echo "Usage: dlmac convert <file> --to ${supported_formats}"
     exit 1
+  fi
+
+  if [[ "$output_format" == "jpeg" ]]; then
+    output_format="jpg"
   fi
 
   if [[ ! -f "$input_file" ]]; then
@@ -532,7 +574,9 @@ cmd_convert() {
     exit 1
   fi
 
-  require_cmd ffmpeg
+  if [[ "$output_format" != "webp" ]]; then
+    require_cmd ffmpeg
+  fi
 
   mkdir -p "$DOWNLOAD_DIR"
 
@@ -548,14 +592,76 @@ cmd_convert() {
   fi
 
   case "$output_format" in
+    mp4)
+      ffmpeg -i "$input_file" \
+        -map 0:v:0 -map "0:a?" \
+        -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p \
+        -c:a aac -b:a 192k -movflags +faststart "$output_file"
+      ;;
+    webm)
+      ffmpeg -i "$input_file" \
+        -map 0:v:0 -map "0:a?" \
+        -c:v libvpx-vp9 -crf 30 -b:v 0 \
+        -c:a libopus -b:a 128k "$output_file"
+      ;;
+    mkv)
+      ffmpeg -i "$input_file" -map 0 -c copy "$output_file"
+      ;;
+    mov)
+      ffmpeg -i "$input_file" \
+        -map 0:v:0 -map "0:a?" \
+        -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p \
+        -c:a aac -b:a 192k -movflags +faststart "$output_file"
+      ;;
     mp3)
-      ffmpeg -i "$input_file" -vn -acodec libmp3lame -q:a 2 "$output_file"
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a libmp3lame -q:a 2 "$output_file"
       ;;
     m4a)
-      ffmpeg -i "$input_file" -vn -c:a aac -b:a 192k "$output_file"
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a aac -b:a 192k "$output_file"
       ;;
     wav)
-      ffmpeg -i "$input_file" -vn "$output_file"
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a pcm_s16le "$output_file"
+      ;;
+    flac)
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a flac "$output_file"
+      ;;
+    ogg)
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a libvorbis -q:a 5 "$output_file"
+      ;;
+    opus)
+      ffmpeg -i "$input_file" -map 0:a:0 -vn -c:a libopus -b:a 128k "$output_file"
+      ;;
+    jpg)
+      ffmpeg -i "$input_file" -map 0:v:0 -frames:v 1 -update 1 -q:v 2 "$output_file"
+      ;;
+    png)
+      ffmpeg -i "$input_file" -map 0:v:0 -frames:v 1 -update 1 "$output_file"
+      ;;
+    gif)
+      case "${input_file##*.}" in
+        jpg|jpeg|png|webp|gif|tif|tiff)
+          ffmpeg -i "$input_file" -map 0:v:0 -frames:v 1 -update 1 "$output_file"
+          ;;
+        *)
+          ffmpeg -i "$input_file" -map 0:v:0 -vf "fps=12" "$output_file"
+          ;;
+      esac
+      ;;
+    tiff)
+      ffmpeg -i "$input_file" -map 0:v:0 -frames:v 1 -update 1 "$output_file"
+      ;;
+    webp)
+      local webp_tool
+      case "${input_file##*.}" in
+        gif|GIF)
+          webp_tool="$(require_webp_tool gif2webp)"
+          "$webp_tool" -quiet -q 80 -metadata all -mt "$input_file" -o "$output_file"
+          ;;
+        *)
+          webp_tool="$(require_webp_tool cwebp)"
+          "$webp_tool" -quiet -q 80 -metadata all -mt "$input_file" -o "$output_file"
+          ;;
+      esac
       ;;
   esac
 

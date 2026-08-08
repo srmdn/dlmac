@@ -13,7 +13,7 @@ features only after the core workflows are reliable.
 
 ## Current state
 
-v0.3 is the latest release. It provides a shippable CLI and local web
+v0.4 is the latest release. It provides a shippable CLI and local web
 workbench that can:
 
 - Show media info.
@@ -24,7 +24,10 @@ workbench that can:
 - Download transcripts in Text, WebVTT, or SRT format.
 - Download video with a quality limit.
 - Download audio as MP3, M4A, or WAV.
-- Convert a local video file to MP3, M4A, or WAV.
+- Convert local video, audio, and image files to curated target formats.
+- Convert supported local images to WebP through the official `cwebp` tools.
+- Hide WebP output when the local WebP tools are unavailable.
+- Select local files through the native macOS picker without uploading media.
 - Display text transcripts and link to saved output files.
 - Run entirely on `127.0.0.1` without accounts or hosted services.
 
@@ -67,6 +70,7 @@ Implemented:
 - Mode tabs for transcript, download, and convert
 - URL input for transcript/download
 - Local file path input for convert
+- Native local file picker for convert
 - Language, quality, and format selectors
 - Run buttons
 - Output viewer
@@ -78,9 +82,21 @@ Release boundaries:
 - Keep accounts, hosted services, private-video workflows, AI summary, and
   speech-to-text outside the release scope.
 
-## Candidate after v0.3: local activity history
+## Released: v0.4 local conversion workbench
 
-Consider local activity history only after v0.3 is released. If approved, it
+The v0.4 release extends the local workbench with broader media conversion
+support while keeping the CLI as the engine.
+
+Implemented:
+
+- Convert local video, audio, and image files to curated target formats.
+- Add WebP output through the official local `cwebp` and `gif2webp` tools.
+- Detect local WebP capability before showing the target in the UI.
+- Inspect local media through the native macOS picker without uploading bytes.
+
+## Candidate after v0.4: local activity history
+
+Consider local activity history only after v0.4 is released. If approved, it
 can record recent transcript, download, and convert runs without adding
 accounts or a database.
 
@@ -88,8 +104,8 @@ This remains a candidate, not committed release scope.
 
 ## Later: YouTube clipper
 
-After the transcript and local web tool are stable, add a clipper workflow for
-turning long videos into selected short clips.
+After the v0.4 workbench is stable, add a clipper workflow for turning long
+videos into selected short clips.
 
 Target workflow:
 
@@ -173,7 +189,7 @@ Do not rewrite into a larger stack until one of these is true:
 
 ## Future ideas
 
-Consider these only after the v0.3 workbench is released and stable:
+Consider these only after the v0.4 workbench is released and stable:
 
 - Local activity history
 - Markdown export
