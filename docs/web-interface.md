@@ -40,9 +40,9 @@ Reference: <https://github.com/elayadesign/redesign-skill>
 
 ## Product scope
 
-### v0.3 MVP
+### v0.4 MVP
 
-The first web release supports the existing safe CLI workflows:
+The current web release supports the existing safe CLI workflows:
 
 - Paste a public YouTube URL.
 - Run transcript extraction with `English` or `Indonesian` captions.
@@ -92,10 +92,10 @@ Behavior:
 
 ## Current architecture
 
-The current CLI is Bash. The v0.3 MVP uses a small Go standard-library server
+The current CLI is Bash. The v0.4 MVP uses a small Go standard-library server
 while keeping the Bash CLI as the engine.
 
-Current v0.3 architecture:
+Current v0.4 architecture:
 
 ```text
 dlmac                 # existing Bash CLI and helper launcher
@@ -108,8 +108,8 @@ internal/web/assets/  # HTML, CSS, and small client script
 Keep the implementation simple:
 
 - Use Go standard library for the local server.
-- Do not add a JavaScript framework for v0.3.
-- Do not add npm, Vite, React, or Electron for v0.3.
+- Do not add a JavaScript framework for v0.4.
+- Do not add npm, Vite, React, or Electron for v0.4.
 - Do not rewrite the existing Bash CLI before the web UI proves useful.
 
 The local server calls the existing `dlmac transcript`, `video`, `audio`, and

@@ -5,7 +5,7 @@
 `dlmac` is a local macOS CLI wrapper for `yt-dlp` and `ffmpeg`. It downloads
 permitted online media and converts local video, audio, and image files.
 
-## Current release: v0.3
+## Current release: v0.4
 
 ### Dependencies
 

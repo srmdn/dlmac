@@ -65,7 +65,7 @@ func (s *Server) Routes() http.Handler {
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := s.template.ExecuteTemplate(w, "index.html", map[string]string{
-		"Version": "0.3 workbench",
+		"Version": "0.4 workbench",
 	}); err != nil {
 		http.Error(w, "template error", http.StatusInternalServerError)
 	}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.4.0
+
 - Expand local conversion to curated video, audio, and image target formats.
 - Add WebP image output through the official Homebrew `webp` tools.
 - Detect WebP encoder availability before showing the target in the web UI.
