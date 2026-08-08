@@ -24,7 +24,10 @@ workbench that can:
 - Download transcripts in Text, WebVTT, or SRT format.
 - Download video with a quality limit.
 - Download audio as MP3, M4A, or WAV.
-- Convert a local video file to MP3, M4A, or WAV.
+- Convert local video, audio, and image files to curated target formats.
+- Convert supported local images to WebP through the official `cwebp` tools.
+- Hide WebP output when the local WebP tools are unavailable.
+- Select local files through the native macOS picker without uploading media.
 - Display text transcripts and link to saved output files.
 - Run entirely on `127.0.0.1` without accounts or hosted services.
 
@@ -67,6 +70,7 @@ Implemented:
 - Mode tabs for transcript, download, and convert
 - URL input for transcript/download
 - Local file path input for convert
+- Native local file picker for convert
 - Language, quality, and format selectors
 - Run buttons
 - Output viewer

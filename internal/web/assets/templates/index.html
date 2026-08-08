@@ -119,23 +119,74 @@
           </form>
 
           <form class="mode-panel" id="convert-form" data-mode-panel="convert">
-            <label class="field">
-              <span>Local file path</span>
-              <input id="convert-file" name="file" type="text" placeholder="/Users/said/Movies/source.mp4" autocomplete="off" required>
-              <small>Paste an absolute path to a video on this Mac.</small>
-            </label>
+            <div class="convert-source">
+              <div class="field-heading">
+                <span>Source file</span>
+                <small>Choose media already stored on this Mac.</small>
+              </div>
+              <div class="picker-row">
+                <button class="secondary" id="pick-file-button" type="button">
+                  Choose local media
+                </button>
+              </div>
+              <label class="field path-field">
+                <span>Path fallback</span>
+                <input id="convert-file" name="file" type="text" placeholder="/absolute/path/to/media.webm" autocomplete="off" required>
+                <small id="convert-file-help">Use this when you already know the local path.</small>
+              </label>
+            </div>
 
-            <fieldset>
-              <legend>Output format</legend>
-              <div class="segments">
-                <label><input type="radio" name="to" value="mp3" checked><span>MP3</span></label>
-                <label><input type="radio" name="to" value="m4a"><span>M4A</span></label>
-                <label><input type="radio" name="to" value="wav"><span>WAV</span></label>
+            <section class="media-card" id="convert-file-card" aria-live="polite" hidden>
+              <span class="media-icon" id="convert-media-icon" aria-hidden="true">—</span>
+              <div class="media-copy">
+                <strong id="convert-file-name">No file selected</strong>
+                <small id="convert-file-meta">Choose a local media file to inspect it.</small>
+              </div>
+              <button class="text-button" id="clear-file-button" type="button">Change</button>
+            </section>
+
+            <fieldset id="convert-output-fieldset">
+              <legend>Convert to</legend>
+              <p class="field-note" id="convert-target-help">Choose a file to see compatible targets.</p>
+
+              <div class="convert-format-groups">
+                <div class="convert-format-group" data-source-kinds="video" hidden>
+                  <span class="format-group-label">Video</span>
+                  <div class="segments format-segments">
+                    <label><input type="radio" name="to" value="mp4" checked><span>MP4</span></label>
+                    <label><input type="radio" name="to" value="webm"><span>WebM</span></label>
+                    <label><input type="radio" name="to" value="mkv"><span>MKV</span></label>
+                    <label><input type="radio" name="to" value="mov"><span>MOV</span></label>
+                  </div>
+                </div>
+
+                <div class="convert-format-group" data-source-kinds="video audio" hidden>
+                  <span class="format-group-label">Audio</span>
+                  <div class="segments format-segments">
+                    <label><input type="radio" name="to" value="mp3"><span>MP3</span></label>
+                    <label><input type="radio" name="to" value="m4a"><span>M4A</span></label>
+                    <label><input type="radio" name="to" value="wav"><span>WAV</span></label>
+                    <label><input type="radio" name="to" value="flac"><span>FLAC</span></label>
+                    <label><input type="radio" name="to" value="ogg"><span>OGG</span></label>
+                    <label><input type="radio" name="to" value="opus"><span>OPUS</span></label>
+                  </div>
+                </div>
+
+                <div class="convert-format-group" data-source-kinds="image" hidden>
+                  <span class="format-group-label">Image</span>
+                  <div class="segments format-segments">
+                    <label><input type="radio" name="to" value="jpg"><span>JPG</span></label>
+                    <label><input type="radio" name="to" value="png"><span>PNG</span></label>
+                    <label><input type="radio" name="to" value="gif"><span>GIF</span></label>
+                    <label><input type="radio" name="to" value="tiff"><span>TIFF</span></label>
+                    <label><input type="radio" name="to" value="webp" data-requires="webp"><span>WebP</span></label>
+                  </div>
+                </div>
               </div>
             </fieldset>
 
-            <button class="primary" type="submit">
-              <span class="button-label">Convert File</span>
+            <button class="primary" id="convert-submit" type="submit" disabled>
+              <span class="button-label">Choose a file</span>
               <span class="spinner" aria-hidden="true"></span>
             </button>
           </form>
@@ -147,9 +198,9 @@
               <p class="eyebrow">Run output</p>
               <h2 id="output-title">Ready</h2>
             </div>
-            <div class="actions">
-              <button type="button" id="copy-button" disabled>Copy</button>
-              <a id="download-link" class="download disabled" href="#" aria-disabled="true">Download</a>
+            <div class="actions" hidden>
+              <button type="button" id="copy-button" disabled hidden>Copy</button>
+              <a id="download-link" class="download disabled" href="#" aria-disabled="true" hidden>Download</a>
             </div>
           </div>
 

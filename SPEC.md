@@ -3,7 +3,7 @@
 ## Purpose
 
 `dlmac` is a local macOS CLI wrapper for `yt-dlp` and `ffmpeg`. It downloads
-permitted online media and extracts audio from local video files.
+permitted online media and converts local video, audio, and image files.
 
 ## Current release: v0.3
 
@@ -13,6 +13,7 @@ permitted online media and extracts audio from local video files.
 - Homebrew
 - `yt-dlp`
 - `ffmpeg`
+- `webp` (Homebrew package providing `cwebp` for WebP output)
 - Bash
 - Go 1.26 or newer to build the local web helper during installation
 
@@ -38,9 +39,7 @@ dlmac transcript <url> --format vtt
 dlmac transcript <url> --format srt
 dlmac serve
 dlmac ui
-dlmac convert <file> --to mp3
-dlmac convert <file> --to m4a
-dlmac convert <file> --to wav
+dlmac convert <file> --to <format>
 ```
 
 ### Expected behavior
@@ -77,8 +76,20 @@ selected format. Plain text is the default.
 
 `dlmac ui` is an alias for `dlmac serve`.
 
-`dlmac convert <file> --to mp3|m4a|wav` extracts audio from a local video file.
-The output goes to `./downloads/`, preserves the base filename, and does not
+`dlmac convert <file> --to <format>` converts one local media file. The output
+goes to `./downloads/`, preserves the base filename, and does not overwrite an
+existing output file.
+
+Supported target formats are:
+
+- Video: `mp4`, `webm`, `mkv`, and `mov`.
+- Audio: `mp3`, `m4a`, `wav`, `flac`, `ogg`, and `opus`.
+- Images: `jpg`, `png`, `gif`, `tiff`, and `webp`.
+
+Video targets encode video and audio with a target-compatible codec profile.
+Audio targets remove the video stream. Image targets export one frame when the
+input contains video. WebP output uses the official `cwebp` encoder and keeps
+the conversion local. The command accepts one input file and does not
 overwrite an existing output file.
 
 ### Error cases
@@ -87,6 +98,7 @@ overwrite an existing output file.
 | --- | --- |
 | Missing `yt-dlp` | Show a clear install command |
 | Missing `ffmpeg` | Show a clear install command |
+| Missing `cwebp` for WebP output | Show a clear `brew install webp` command |
 | Missing URL argument | Show usage and exit non-zero |
 | Invalid URL | Pass through the `yt-dlp` error |
 | Missing local file | Show a clear file-not-found error |
@@ -131,7 +143,11 @@ dlmac ui
 - Run the existing transcript workflow.
 - Let the user download video as MP4 with optional quality selection.
 - Let the user download audio as `mp3`, `m4a`, or `wav`.
-- Let the user convert a local video path to `mp3`, `m4a`, or `wav`.
+- Let the user choose a local media file with a native macOS file picker.
+- Let the user convert local video, audio, or image media to a supported target
+  format.
+- Show WebP as an image target only when `cwebp` is available.
+- Send only the local path to the localhost server; do not upload media bytes.
 - Show loading, success, empty, and error states.
 - Display the transcript for `txt` output.
 - Provide copy and download controls when output files are available.
@@ -177,7 +193,8 @@ To move an installed copy to another directory, copy both `dlmac` and
 - No GUI in the CLI package.
 - No npm or Electron in the CLI package.
 - No playlist support.
-- No interactive format selector.
+- No interactive format selector in the CLI; the local web UI provides a
+  curated selector.
 - No batch conversion.
 - No cloud sync, daemon, or background service.
 - No metadata editor or library management.
@@ -213,6 +230,10 @@ rtk ./dlmac transcript "URL" --lang en
 rtk ./dlmac transcript "URL" --lang id
 rtk ./dlmac transcript "URL" --format srt
 rtk ./dlmac transcript "URL" --lang ar
+rtk ./dlmac convert sample.webm --to mp4
 rtk ./dlmac convert sample.mp4 --to mp3
+rtk ./dlmac convert artwork.png --to tiff
+rtk ./dlmac convert artwork.png --to webp
+rtk ./dlmac convert recording.wav --to flac
 rtk ./dlmac convert missing.mp4 --to mp3
 ```

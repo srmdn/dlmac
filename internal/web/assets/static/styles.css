@@ -244,6 +244,152 @@ legend {
   line-height: 1.4;
 }
 
+.field-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.field-heading > span {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+.field-heading small,
+.field-note {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.convert-source {
+  display: grid;
+  gap: 14px;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.secondary {
+  min-height: 43px;
+  border: 1px solid #c9c4b9;
+  border-radius: 10px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: #fffefa;
+  font-size: 0.78rem;
+  font-weight: 740;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.secondary:hover {
+  border-color: var(--accent-2);
+  background: #f4faf8;
+}
+
+.secondary:disabled,
+.text-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.path-field {
+  gap: 7px;
+}
+
+.media-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  border: 1px solid #cdded8;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f3f8f5;
+}
+
+.media-card[hidden] {
+  display: none;
+}
+
+.media-icon {
+  display: grid;
+  min-width: 42px;
+  min-height: 42px;
+  place-items: center;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--accent-2);
+  font: 750 0.58rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.media-copy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.media-copy strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 0.79rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.media-copy small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.text-button {
+  border: 0;
+  padding: 4px 2px;
+  color: var(--accent-hover);
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 740;
+  cursor: pointer;
+}
+
+.convert-format-groups {
+  display: grid;
+  gap: 13px;
+}
+
+.convert-format-group {
+  display: grid;
+  gap: 7px;
+}
+
+.convert-format-group[hidden] {
+  display: none;
+}
+
+.format-group-label {
+  color: var(--muted);
+  font: 750 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.format-segments {
+  grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
+}
+
+.field-note {
+  margin: -3px 0 2px;
+}
+
 input[type="url"],
 input[type="text"] {
   width: 100%;
@@ -584,6 +730,11 @@ pre {
   .mode-panel.active {
     padding-right: 18px;
     padding-left: 18px;
+  }
+
+  .picker-row {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .output-header {

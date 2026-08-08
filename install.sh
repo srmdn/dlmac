@@ -27,7 +27,7 @@ if ! command -v brew &>/dev/null; then
   echo "Error: Homebrew not found."
   echo "Install it from: https://brew.sh"
   echo ""
-  echo "Then run: brew install yt-dlp ffmpeg go"
+  echo "Then run: brew install yt-dlp ffmpeg webp go"
   exit 1
 fi
 
@@ -39,6 +39,10 @@ fi
 
 if ! command -v ffmpeg &>/dev/null; then
   missing+=("ffmpeg")
+fi
+
+if ! command -v cwebp &>/dev/null || ! command -v gif2webp &>/dev/null; then
+  missing+=("webp")
 fi
 
 if ! command -v go &>/dev/null; then
